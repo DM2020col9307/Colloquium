@@ -1,3 +1,6 @@
+#
+# [McM]: Не забыть перевести кодировку FAR'а в UTF-8!!!
+#
 
 class Z():
     # Инициализация класса.
@@ -33,32 +36,70 @@ class Z():
         return N( int( str( self ) ) )
 
     def __lt__( self, other ):
-        if ( len( self ) < len( other ) ):
-            return True
-        elif ( len( self ) > len( other ) ):
-            return False
+        if ( not self.sign and not other.sign ):
+            if ( len( self ) < len( other ) ):
+                return True
+            elif ( len( self ) > len( other ) ):
+                return False
+            else:
+                # Long check must be here...
+                return True
+        elif ( self.sign and other.sign ):
+            if ( len( self ) < len( other ) ):
+                return False
+            elif ( len( self ) > len( other ) ):
+                return True
+            else:
+                # Long check must be here...
+                return False
         else:
-            # Long check must be here...
-            return True
-
+            if self.sign:
+                return True
+            else:
+                return False
     def __gt__( self, other ):
-        if ( len( self ) > len( other ) ):
-            return True
-        elif ( len( self ) < len( other ) ):
-            return False
+        if ( not self.sign and not other.sign ):
+            if ( len( self ) < len( other ) ):
+                return False
+            elif ( len( self ) > len( other ) ):
+                return True
+            else:
+                # Long check must be here...
+                return False
+        elif ( self.sign and other.sign ):
+            if ( len( self ) < len( other ) ):
+                return True
+            elif ( len( self ) > len( other ) ):
+                return False
+            else:
+                # Long check must be here...
+                return True
         else:
-            # Long check must be here...
-            return True
-
+            if self.sign:
+                return False
+            else:
+                return True
 
     def __add__( self, other ):
-        if ( abs( self ) > abs( other ) ):
-            out = "-" if self < Z( 0 ) else ""
-            out += str( N( int(str(abs(self))) ) ) + N( int(str(abs(other))) )
+        if self > Z(0) and other > Z(0):
+            print('1')
+            out = str( other.toN() + self.toN() )
+            return Z( int( out ) )
+        elif self < Z(0) and other < Z(0):
+            print('2')
+            out = '-' + str( abs(other).toN() + abs(self).toN() )
+            return Z(int(out))
+        elif self > Z(0) and other < Z(0):
+            print('3')
+            if (abs(self) > abs(other)):
+                out = str( self.toN() - abs( other ).toN() )
+            else:
+                out = '-' + str( abs( other ).toN() - self.toN() )
         else:
-            out = "-" if other < Z( 0 ) else ""
-            out += str( abs( other ).toN() + abs( self ).toN() )
+            print('4')
+            if (abs(other) > abs(self)):
+                out = str( other.toN() - abs( self ).toN() )
+            else:
+                out = '-' + str( abs( self ).toN() - other.toN() )
         return Z( int( out ) )
-
-
 print( Z( 33 ) + Z( -108 ) )
