@@ -1,11 +1,15 @@
+#
+# [McM]: Не забыть перевести кодировку FAR'а в UTF-8!!!
+#
 
-class Z():
+
+class Z( N ):
     # Инициализация класса.
     # Здесь: списку "Z.digits" присваивается значение первого аргумента (тип: int).
     #Пример: "Z( -1234 )" создаст объект класса "Z()" с "digits = [1, 2, 3, 4]" и "sign = True".
     def __init__(self, digit):
-        digit = str(int(str(digit).replace('[', '').replace(']', '').replace(' ', '').replace(',', '')))
         try:
+            digit = str(int(str(digit).replace('[', '').replace(']', '').replace(' ', '').replace(',', '')))
             self.sign = False
             if (digit[0] == '-'):
                 self.sign = True
@@ -20,9 +24,7 @@ class Z():
         out += str(''.join( map( str, self.digits )))
         return out
 
-    # "len( Z() )" возвращает количество цифр в числе, знак не учитывается.
-    def __len__( self ):
-        return len( self.digits )
+    # "len( Z() )", наследованный от N()::__len__() возвращает количество цифр в числе, знак не учитывается.
 
     def __abs__( self ):
         return Z( list( map( abs, self.digits ) ) )
@@ -32,12 +34,21 @@ class Z():
             raise RuntimeError( "Z", str( self ), "cannot be presented as N." )
         return N( int( str( self ) ) )
 
+    def toQ( self ):
+        return Q( self.digits, 1 )
+
+    # Нет проверки на знак!
     def __lt__( self, other ):
         if ( len( self ) < len( other ) ):
             return True
         elif ( len( self ) > len( other ) ):
             return False
         else:
+            for i in range( len( self ), 0, -1 ):
+                if self.digits[ i ] < other.digits[ i ]:
+                    return True
+                elif self.digits[ i ] > other.digits[ i ]:
+                    return False
             # Long check must be here...
             return True
 
@@ -50,6 +61,11 @@ class Z():
             # Long check must be here...
             return True
 
+    def __le__( self, other ):
+        return not ( self > other )
+    
+    def __ge__( self, other ):
+        return not ( self < other )
 
     def __add__( self, other ):
         if ( abs( self ) > abs( other ) ):
@@ -62,3 +78,4 @@ class Z():
 
 
 print( Z( 33 ) + Z( -108 ) )
+

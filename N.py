@@ -28,14 +28,15 @@ class N:
     def __len__( self ):
         return len( self.digits )
 
+    # Проверка на возможность перевести запрос на более высокий уровень.
+    def tryReverseOp( self, other, operator ):
+        if ( type( self ) != type( other ) ):
+            return eval( str( other ) + operator + str( self ) )
 
 
     # Переопределение сложения.
     def __add__( self, other ):
-        if isinstance(other, int):
-            other = N( other )
-        elif not isinstance(other, N):
-            raise RuntimeError( "Digit cannot be presented as integer > 0." )
+        self.tryReverseOp( other, "+" )
 
         while ( len( self ) < len( other ) ):
             self.digits.insert( 0, 0 )
@@ -55,7 +56,6 @@ class N:
                 out[ i ] %= 10
 
         return N( int( str(''.join(map(str, out))) ) )
-
 
 
 #print( N( 33 ) + N( 108 ) )
