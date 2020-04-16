@@ -41,7 +41,21 @@ class Q():
             return True
         else:
             return False
+    def toN(self):
+        if (self.ifZ and (self.num//self.denum>Z(0))):
+            return N(int(str(self.num//self.denum)))
+        else:
+            raise RuntimeError("Z", str(self), "cannot be presented as N.")
 
+    def toZ(self):
+        if (self.ifZ):
+            return Z(int(str(self.num//self.denum)))
+        else:
+            raise RuntimeError("Z", str(self), "cannot be presented as N.")
+
+    def toPoly(self):
+        return poly(self)
+    
     def __add__(self, other):
         if type(self) != type(other):
             return tryReverseOp(self, other, '+')
@@ -78,6 +92,12 @@ class Q():
         tmp = self / other
         res = tmp.num // tmp.denum
         return res
+    
+     def __mod__(self,other):
+        if type(self) != type(other):
+            return tryReverseOp(self, other, '%')
+        mod=self-(self//other)
+        return mod
 
     def __lt__(self, other):
         if type(self) != type(other):
