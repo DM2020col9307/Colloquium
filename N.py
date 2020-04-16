@@ -25,7 +25,14 @@ class N:
         return len( self.digits )
 
     # Проверка на возможность перевести запрос на более высокий уровень.
+    def toZ( self ):
+        return Z( self.digits )
 
+    def toQ(self):
+        return Q(self,1)
+
+    def toPoly(self):
+        return poly(self)
 
     # "Less than", "<"
     def __lt__( self, other ):
