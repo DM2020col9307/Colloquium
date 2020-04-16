@@ -36,10 +36,6 @@ class Z( N ):
 
     def toQ( self ):
         return Q( self.digits, 1 )
-    def toPoly(self):
-        return poly(self)
-
-
     # Нет проверки на знак!
     # Inherited from N::__lt__().
     '''def __lt__( self, other ):
@@ -57,27 +53,16 @@ class Z( N ):
             return True'''
 
     def __gt__( self, other ):
-        if ( not self.sign and not other.sign ):
-            if ( len( self ) < len( other ) ):
-                return False
-            elif ( len( self ) > len( other ) ):
-                return True
-            else:
-                # Long check must be here...
-                return False
-        elif ( self.sign and other.sign ):
-            if ( len( self ) < len( other ) ):
-                return True
-            elif ( len( self ) > len( other ) ):
-                return False
-            else:
-                # Long check must be here...
-                return True
+
+
+        if ( len( self ) > len( other ) ):
+            return True
+        elif ( len( self ) < len( other ) ):
+            return False
         else:
-            if self.sign:
-                return False
-            else:
-                return True
+            # Long check must be here...
+            return True
+
 
     def __le__( self, other ):
         return not ( self > other )
@@ -86,26 +71,8 @@ class Z( N ):
         return not ( self < other )
 
     def __add__( self, other ):
-        if self > Z(0) and other > Z(0):
-            print('1')
-            out = str( other.toN() + self.toN() )
-            return Z( int( out ) )
-        elif self < Z(0) and other < Z(0):
-            print('2')
-            out = '-' + str( abs(other).toN() + abs(self).toN() )
-            return Z(int(out))
-        elif self > Z(0) and other < Z(0):
-            print('3')
-            if (abs(self) > abs(other)):
-                out = str( self.toN() - abs( other ).toN() )
-            else:
-                out = '-' + str( abs( other ).toN() - self.toN() )
-        else:
-            print('4')
-            if (abs(other) > abs(self)):
-                out = str( other.toN() - abs( self ).toN() )
-            else:
-                out = '-' + str( abs( self ).toN() - other.toN() )
+
+
         return Z( int( out ) )
 
 
