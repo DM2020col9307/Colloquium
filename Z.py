@@ -2,13 +2,14 @@
 # [McM]: Не забыть перевести кодировку FAR'а в UTF-8!!!
 #
 
-class Z():
+
+class Z( N ):
     # Инициализация класса.
     # Здесь: списку "Z.digits" присваивается значение первого аргумента (тип: int).
     #Пример: "Z( -1234 )" создаст объект класса "Z()" с "digits = [1, 2, 3, 4]" и "sign = True".
     def __init__(self, digit):
-        digit = str(int(str(digit).replace('[', '').replace(']', '').replace(' ', '').replace(',', '')))
         try:
+            digit = str(int(str(digit).replace('[', '').replace(']', '').replace(' ', '').replace(',', '')))
             self.sign = False
             if (digit[0] == '-'):
                 self.sign = True
@@ -23,9 +24,7 @@ class Z():
         out += str(''.join( map( str, self.digits )))
         return out
 
-    # "len( Z() )" возвращает количество цифр в числе, знак не учитывается.
-    def __len__( self ):
-        return len( self.digits )
+    # "len( Z() )", наследованный от N()::__len__() возвращает количество цифр в числе, знак не учитывается.
 
     def __abs__( self ):
         return Z( list( map( abs, self.digits ) ) )
@@ -35,28 +34,28 @@ class Z():
             raise RuntimeError( "Z", str( self ), "cannot be presented as N." )
         return N( int( str( self ) ) )
 
-    def __lt__( self, other ):
-        if ( not self.sign and not other.sign ):
-            if ( len( self ) < len( other ) ):
-                return True
-            elif ( len( self ) > len( other ) ):
-                return False
-            else:
-                # Long check must be here...
-                return True
-        elif ( self.sign and other.sign ):
-            if ( len( self ) < len( other ) ):
-                return False
-            elif ( len( self ) > len( other ) ):
-                return True
-            else:
-                # Long check must be here...
-                return False
+    def toQ( self ):
+        return Q( self.digits, 1 )
+    def toPoly(self):
+        return poly(self)
+
+
+    # Нет проверки на знак!
+    # Inherited from N::__lt__().
+    '''def __lt__( self, other ):
+        if ( len( self ) < len( other ) ):
+            return True
+        elif ( len( self ) > len( other ) ):
+            return False
         else:
-            if self.sign:
-                return True
-            else:
-                return False
+            for i in range( len( self ), 0, -1 ):
+                if self.digits[ i ] < other.digits[ i ]:
+                    return True
+                elif self.digits[ i ] > other.digits[ i ]:
+                    return False
+            # Long check must be here...
+            return True'''
+
     def __gt__( self, other ):
         if ( not self.sign and not other.sign ):
             if ( len( self ) < len( other ) ):
@@ -80,6 +79,12 @@ class Z():
             else:
                 return True
 
+    def __le__( self, other ):
+        return not ( self > other )
+    
+    def __ge__( self, other ):
+        return not ( self < other )
+
     def __add__( self, other ):
         if self > Z(0) and other > Z(0):
             print('1')
@@ -102,4 +107,7 @@ class Z():
             else:
                 out = '-' + str( abs( self ).toN() - other.toN() )
         return Z( int( out ) )
-print( Z( 33 ) + Z( -108 ) )
+
+
+
+#print( N( 77345 ) - N( 1234124 ) ) # Must be "-1156779".

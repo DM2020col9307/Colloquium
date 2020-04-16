@@ -11,40 +11,40 @@
 \<class\>():
 	var1; var2; ...
 * Индекс; Кодовое описание; Предполагаемые действия;
-* Имя автора.
+* Имя автора \[(+ / +? / +- / -?)\].
 
 
 N():
 	list digits[] (int);
 
 * N1	comp_N_N	overload <, >, ==, >=, <=, !=
-* Михаил
+* Михаил и Никита (+-)
 * N2	!zer_N		overload !=, ==
-* Михаил
+* Михаил (отдельная перегрузка не нужна)
 * N3	inc_N		overload +
-* Михаил
+* Михаил (отдельная перегрузка не нужна)
 * N4	add_N_N		overload +
-* Михаил, Ярослав
+* Михаил, Ярослав (+)
 * N5	sub_N_N		overload -
-* Михаил
+* Михаил, Никита, Ярослав (+)
 * N6	mul_N_digit	overload \*
-* Дмитрий
+* Дмитрий (отдельная перегрузка не нужна)
 * N7	mul_N_10^k	overload \*, \*\*
-* Дмитрий
+* Дмитрий (отдельная перегрузка не нужна)
 * N8	mul_N_N		overload \*
-* Дмитрий
+* Дмитрий, Никита (-?)
 * N9	(== N5 + N6)
 * Дмитрий
 * N10	(== N11 с ограничениями? Не понял, зачем вообще нужен этот пункт)
 * Дмитрий
-* N11	div_N_N		overload //
-* Илья
+* N11	div_N_N		overload /, //
+* Илья, Никита (-?)
 * N12	mod_N_N		overload %
 * Илья
 * N13	GCF_N		N = GCF( N1, N2, ... )
-* Владимир
+* Владимир (+?)
 * N14	LCM_N		N = LCM( N1, N2, ... )
-* Владимир
+* Владимир (+?)
 
 
 Z():
@@ -54,15 +54,15 @@ Z():
 * Z1	abs_Z		overload abs()
 * Екатерина
 * Z2	comp_Z_0	overload <, >, ==, >=, <=, !=
-* Екатерина
+* Екатерина, Ярослав (-?)
 * Z3	mul_Z_-1	overload \*
 * Екатерина
 * Z4	trans_N->Z	Z = N.toZ()
-* Екатерина
+* Екатерина (+)
 * Z5	trans_Z->N	N = Z.toN()
-* Екатерина
+* Екатерина (+)
 * Z6	add_Z_Z		overload +, use N::(+) with sign check.
-* Яна
+* Яна (+-)
 * Z7	sub_Z_Z		overload -, use N::(+), N::(-) with sign check.
 * Яна
 * Z8	mul_Z_Z		overload \*, use N::(\*) with sign check.
@@ -109,7 +109,7 @@ P():
 * P5	leadcoef_P	Q = P.leadcoef()
 * --
 * P6	deg_P		N = P.deg()
-* -
+* --
 * P7	factor_P	?
 * Илья
 * P8	mul_P_P		overload \*
@@ -117,9 +117,10 @@ P():
 * P9	div_P_P		overload //
 * Илья
 * P10	mod_P_P		overload %
+* Полина (+-)
 * P11	GCF_P		? = GCF( P1, P2, ... )
-* Никита
+* Никита (+?)
 * P12	dervtive_P	P = P.derivative()
-* Никита
+* Никита (+?)
 * P13	nmr_P		P = P.nmr()
-* --
+* Полина (+-)
