@@ -57,18 +57,6 @@ class Q():
     def toPoly(self):
         return poly(self)
 
-    def tryReverseOp(a, b, op):
-        crutch = {type(N(0)): 1,
-                  type(Z(0)): 2,
-                  type(Q(0)): 3,
-                  type(poly(0)): 4
-                  }
-        if type(a) != type(b):
-            if crutch[type(a)] < crutch[type(b)]:
-                eval(type(b)(a) + op + b)
-            else:
-                eval(a + op + type(a)(b))
-
     def __add__(self, other):
         if type(self) != type(other):
             return tryReverseOp(self, other, '+')
