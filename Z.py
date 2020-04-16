@@ -36,6 +36,10 @@ class Z( N ):
 
     def toQ( self ):
         return Q( self.digits, 1 )
+    
+    def toPoly(self):
+        return poly(self)
+    
     # Нет проверки на знак!
     # Inherited from N::__lt__().
     '''def __lt__( self, other ):
