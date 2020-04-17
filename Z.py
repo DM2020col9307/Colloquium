@@ -1,7 +1,6 @@
-#
-# [McM]: Не забыть перевести кодировку FAR'а в UTF-8!!!
-#
-
+from main import *
+from N import *
+from Q import *
 
 class Z( N ):
     # Инициализация класса.
@@ -36,10 +35,10 @@ class Z( N ):
 
     def toQ( self ):
         return Q( self.digits, 1 )
-    
     def toPoly(self):
         return poly(self)
-    
+
+
     # Нет проверки на знак!
     # Inherited from N::__lt__().
     '''def __lt__( self, other ):
@@ -57,8 +56,6 @@ class Z( N ):
             return True'''
 
     def __gt__( self, other ):
-
-
         if ( len( self ) > len( other ) ):
             return True
         elif ( len( self ) < len( other ) ):
@@ -67,7 +64,6 @@ class Z( N ):
             # Long check must be here...
             return True
 
-
     def __le__( self, other ):
         return not ( self > other )
     
@@ -75,10 +71,38 @@ class Z( N ):
         return not ( self < other )
 
     def __add__( self, other ):
-
-
+        if ( abs( self ) > abs( other ) ):
+            out = "-" if self < Z( 0 ) else ""
+            out += str( N( int(str(abs(self))) ) ) + N( int(str(abs(other))) )
+        else:
+            out = "-" if other < Z( 0 ) else ""
+            out += str( abs( other ).toN() + abs( self ).toN() )
         return Z( int( out ) )
+    def __mul__(self,other):
+        tryReverseOp(self, other, "*")
+        return Z(("-" if self.sign ^ other.sign else "") + str(abs(self).toN() * abs(other).toN()))
+    def __floordiv__(self, other):
+        tryReverseOp(self, other, "//")
+        return Z(("-" if self.sign ^ other.sign else "") + str(abs(self).toN() // abs(other).toN()))
+    def __truediv__(self, other):
+        tryReverseOp(self, other, "/")
+        return Z(("-" if self.sign ^ other.sign else "") + str(abs(self).toN() / abs(other).toN()))
+    def __mod__(self, other):
+        tryReverseOp(self, other, "%")
+        return Z(("-" if self.sign ^ other.sign else "") + str(abs(self).toN() % abs(other).toN()))
+    def __sub__(self, other):
+        tryReverseOp(self, other, "-")
+        if (abs(self) > abs(other)):
+            out = "-" if self < Z(0) else ""
+            if (other<Z(0)):
+                out += str(N(int(str(abs(self))))) - N(int(str(abs(other))))
+            else:
+                out += str(N(int(str(abs(self))))) + N(int(str(abs(other))))
+        else:
+            out = "" if other < Z(0) else "-"
+            if (self>Z(0)):
+                out += str(abs(other).toN() + abs(self).toN())
+            else:
+                out += str(abs(other).toN() - abs(self).toN())
+        return Z(int(out))
 
-
-
-#print( N( 77345 ) - N( 1234124 ) ) # Must be "-1156779".
