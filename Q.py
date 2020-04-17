@@ -2,7 +2,7 @@ from main import *
 from N import *
 from Z import *
 
-class Q():
+class Q:
     def __init__(self, num, denum = N(1) ):
         if isinstance( num, N ):
             self.num = num.toZ()
@@ -41,6 +41,7 @@ class Q():
             return True
         else:
             return False
+
     def toN(self):
         if (self.ifZ and (self.num//self.denum>Z(0))):
             return N(int(str(self.num//self.denum)))
@@ -55,7 +56,7 @@ class Q():
 
     def toPoly(self):
         return poly(self)
-    
+
     def __add__(self, other):
         if type(self) != type(other):
             return tryReverseOp(self, other, '+')
@@ -81,7 +82,7 @@ class Q():
 
     def __truediv__(self, other):
         if type(self) != type(other):
-            return tryReverseOp(self, other, '*')
+            return tryReverseOp(self, other, '/')
         num = self.num * other.denum
         denum = self.denum * other.num
         return Q(num, denum)
@@ -92,8 +93,8 @@ class Q():
         tmp = self / other
         res = tmp.num // tmp.denum
         return res
-    
-     def __mod__(self,other):
+
+    def __mod__(self,other):
         if type(self) != type(other):
             return tryReverseOp(self, other, '%')
         mod=self-(self//other)

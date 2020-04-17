@@ -1,9 +1,11 @@
 #
 # [McM]: Не забыть перевести кодировку FAR'а в UTF-8!!!
 #
+
 from main import *
 from Z import *
 from Q import *
+
 class N:
     # Инициализация класса.
     # Здесь: списку "N.digits" присваивается значение первого аргумента (тип: int).
@@ -25,6 +27,8 @@ class N:
         return len( self.digits )
 
     # Проверка на возможность перевести запрос на более высокий уровень.
+
+
     def toZ( self ):
         return Z( self.digits )
 
@@ -33,57 +37,6 @@ class N:
 
     def toPoly(self):
         return poly(self)
-
-    # "Less than", "<"
-    def __lt__( self, other ):
-        if type(self) != type(other):
-            return tryReverseOp(self, other, '<')
-        if ( len( self ) < len( other ) ):
-            return True
-        elif ( len( self ) > len( other ) or ( self.digits == [ 0 ] and other.digits == [ 0 ] ) ):
-            return False
-        else:
-            for i in range( len( self ) ):
-                if self.digits[ i ] < other.digits[ i ]:
-                    return True
-                elif self.digits[ i ] > other.digits[ i ]:
-                    return False
-            return False
-    # "<="
-    def __le__(self, other):
-        if type(self) != type(other):
-            return tryReverseOp(self, other, '<=')
-        if ( len( self ) < len( other ) or ( self.digits == [ 0 ] and other.digits == [ 0 ] ) ):
-            return True
-        elif ( len( self ) > len( other ) ):
-            return False
-        else:
-            for i in range( len( self ) ):
-                if self.digits[ i ] < other.digits[ i ]:
-                    return True
-                elif self.digits[ i ] > other.digits[ i ]:
-                    return False
-            return True
-    # "=="
-    def __eq__(self, other):
-        if type(self) != type(other):
-            return tryReverseOp(self, other, '==')
-        if ( len(self) != len(other) ):
-            return False
-        else:
-            for i in range( len( self ) ):
-                if self.digits[ i ] != other.digits[ i ]:
-                    return False
-            return True
-    # "!="
-    def __ne__(self, other):
-        return not self == other
-    # ">"
-    def __gt__(self, other):
-        return not self <= other
-    # ">="
-    def __ge__(self, other):
-        return not self < other
 
     # "Less than", "<"
     def __lt__( self, other ):
