@@ -12,13 +12,20 @@ def parse(s):
     def fordx(s):
         return 'poly({' + s[3] + ':' + str(s[1] and s[1] or 1) + '})'
 
+    def forqx(s):
+        return '(('+s[0][:-1]+')*' + 'x)'
+    def forqdx(s):
+        return '(('+s[1]+')*' + 'x'+s[2] + ')'
+
     s = s.replace(' ', '')
     s = s.lower()
-
+    patforqx = '(?<![\^])\d+/\d+x(?![\^])' #все равно велосипед
+    patforqdx = '(?<![\^])(\d+/\d+)x(\^\d+)' #на костыльной тяге
     patforn = '(?:(?<!x\^)(?<!\d))\d+(?![xX0-9])'  # поиск всех не-коэффициентов х
     patforx = '\d*x'  # для х без степени
     patfordx = '(?<![x0-9])(\d*)(x\^)(\d+)'  # для х со степенью
-
+    s = re.sub(patforqx, forqx, s)
+    s = re.sub(patforqdx, forqdx, s)
     s = re.sub(patforn, forN, s)
     s = re.sub(patfordx, fordx, s)
     s = re.sub(patforx, forx, s)
@@ -608,10 +615,10 @@ class Z():
         return self + other
 
     def gcd(self, other):
-        return N(self.digits).GCD(N(other.digits))
+        return N(self.digits).gcd(N(other.digits))
 
     def lcm(self, other):
-        return N(self.digits).LCM(N(other.digits))
+        return self.toN().lcm(N(other.digits))
 
 
 class Q():
@@ -893,13 +900,12 @@ class poly():
         return out
 
     def factor_P(self):
-        a = poly(self.coef)
-        g = abs(a.coef[0].num).toN().gcd(abs(a.coef[0].num).toN())
-        l = a.coef[0].denum.lcm(a.coef[0].denum)
-        for i in range(1, len(a.coef)):
-            g = g.gcd(abs(a.coef[0].num))
-            l = l.lcm(a.coef[i].denum)
-        return Q(g, l)
+        a = N(0)
+        b = Z(1)
+        for i in self.coef.keys():
+            a = a.gcd(self.coef[i].num)
+            b = b.lcm(self.coef[i].denum)
+        return Q(a,b)
 
     # вернет целую часть
     def __truediv__(self, other):
@@ -943,6 +949,9 @@ class poly():
     def gcd(self, other):
         poly1 = poly(self.coef)
         poly2 = poly(other.coef)
+        a = poly2.coef[0]
+        if poly2.deg() == 0:
+            return a
         while poly2.deg() > 0:
             poly1 = poly1 % poly2
             poly1, poly2 = poly2, poly1
@@ -950,7 +959,7 @@ class poly():
             poly1 = poly1.mulq(Q(1) / poly1.lead())
             return poly1
         else:
-            return 1
+            return Q(1)
 
     # Производная многочлена.
     def der(self):
