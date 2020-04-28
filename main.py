@@ -935,9 +935,11 @@ class poly():
         while poly2.deg() > 0:
             poly1 = poly1 % poly2
             poly1, poly2 = poly2, poly1
-
-        poly1 = poly1.mulq(Q(1) / poly1.lead())
-        return poly1
+        if self % poly1 == Q(0):
+            poly1 = poly1.mulq(Q(1) / poly1.lead())
+            return poly1
+        else:
+            return 1
 
     # Производная многочлена.
     def der(self):
