@@ -1,23 +1,27 @@
 import re # Регулярные выражения, для парсера строки.
 
 # Парсер входной строки.
-def parse(s): 
+import re
+def parse(s):
     def forN(s):
         return 'N(' + s[0] + ')'
 
     def forx(s):
-        return 'poly(1:' + s[0][:-1] + ')'
+        return 'poly({1:' + (s[0][:-1] and s[0][:-1] or '1') + '})'
 
     def fordx(s):
-        return 'poly({}:{})'.format(s[3], s[1])
+        return 'poly({' + s[3]+ ':' + str(s[1] and s[1] or 1) + '})'
+
+    s = s.replace(' ','')
+    s = s.lower()
 
     patforn = '(?:(?<!x\^)(?<!\d))\d+(?![xX0-9])'  # поиск всех не-коэффициентов х
-    patforx = '(?<![x0-9])\d+x(?=[^\^0-9x])'  # для х без степени
-    patfordx = '(?<![x0-9])(\d+)(x\^)(\d+)'  # для х со степенью
+    patforx = '\d*x'  # для х без степени
+    patfordx = '(?<![x0-9])(\d*)(x\^)(\d+)'  # для х со степенью
 
     s = re.sub(patforn, forN, s)
-    s = re.sub(patforx, forx, s)
     s = re.sub(patfordx, fordx, s)
+    s = re.sub(patforx, forx, s)
     return s
 
 
@@ -890,8 +894,8 @@ class poly():
 
 
 
-print( eval( 'gcd( N( 123444 ), N( 8736492 ), Z( 8289798 ) )' ) )
-print( eval( 'derivative( poly({  1: Q( 3, 4 ), 7: Q( 17, 9 ), 9992: Z( -8 )   }) )' ) )
+#print( eval( 'gcd( N( 123444 ), N( 8736492 ), Z( 8289798 ) )' ) )
+#print( eval( 'derivative( poly({  1: Q( 3, 4 ), 7: Q( 17, 9 ), 9992: Z( -8 )   }) )' ) )
 '''print( poly({  -4: Q( 5, 4 )  }) + poly({  -4: Q( 7, 17 ), 17: Q( -3 )  }) )
 print(poly('1 2 2'))
 print(poly('2 2')/poly('1 1'))
@@ -901,7 +905,7 @@ print(poly('-1'))
 print(eval('N(5) * N(9) / N(4) + N(3)'))
 #print(poly('1 -20 175 -878 2779 -5744 7737 -6534 3132 -648').nmr())'''
 
-#s1 = '5 * 9 / 4 +3'
+#s1 = '5 * 9 / 4 +3x^2'
 #print(eval(parse(s1)))
 
 
