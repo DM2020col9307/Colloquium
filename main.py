@@ -899,7 +899,7 @@ class poly():
         p1 = poly(self.coef)
         p2 = poly(other.coef)
         res = poly(0)
-        while (p1.deg() >= p2.deg()):
+        while (p1.deg() >= p2.deg() and p1.deg()):
             dif = p1.deg() - p2.deg()
             q = p1.lead() / p2.lead()
             res = res + poly({dif: q})
@@ -915,7 +915,7 @@ class poly():
         p1 = poly(self.coef)
         p2 = poly(other.coef)
         res = poly(0)
-        while (p1.deg() >= p2.deg()):
+        while (p1.deg() >= p2.deg() and p1.deg()):
             dif = p1.deg() - p2.deg()
             q = p1.lead() / p2.lead()
             res = res + poly({dif: q})
