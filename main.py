@@ -38,6 +38,130 @@ def tryReverseOp(a, b, op):
         raise RuntimeError( "Impossible compare type" ) # Если ошибка при сравнении всё-таки произошла, то сообщаем об этом, вызывая исключение.
 
 
+def gcd( *args ): # Общая vararg-функция вызова всех GCD() аргументов по цепи.
+    args, arglist, mustBePoly, outgcd = list( args ), [], False, None
+
+    if len( args ) < 2: # Если слишком мало аргументов -- возбуждаем ошибку.
+        raise RuntimeError( "There's too few arguments for GCD()." )
+
+    for i in args: # Формируем список из аргументов, попутно проверяя, нет ли ошибок в исходных данных и должен ли результат быть полиномом.
+        if isinstance( i, ( poly ) ):
+            mustBePoly = True # Если в аргументах есть хотя бы один poly(), то результат уже должен быть того же типа.
+            arglist.append( i )
+        elif isinstance( i, ( Z ) ):
+            arglist.append( abs( i ).toN() ) # GCD() и LCM() игнорируют знаки, так что все Z() превращаются в N().
+        elif isinstance( i, ( N ) ):
+            arglist.append( i )
+        else:
+            print( i )
+            raise RuntimeError( "Object is not a N-digit, Z-digit or polynom." )
+
+    if mustBePoly: # Здесь приводим все не-poly() объекты к poly() и говорим, что результат -- тоже полином.
+        if not isinstance( arglist[ 0 ], ( poly ) ):
+            arglist[ 0 ] = arglist[ 0 ].toPoly()
+        outgcd = arglist[ 0 ]
+
+        for i in range( 1, len( arglist ) ):
+            if not isinstance( arglist[ i ], ( poly ) ):
+                arglist[ i ] = arglist[ i ].toPoly()
+            outgcd = outgcd.gcd( arglist[ i ] ) # Цепной вызов GCD() текущего объекта с предыдущим (начиная со второго).
+    else: # Если же в агрументов не попалось ни одного полинома, то просто вызываем this.GCD( prev ) у всех объектов подряд, кроме первого.
+        outgcd = arglist[ 0 ]
+        for i in range( 1, len( arglist ) ):
+            outgcd = outgcd.gcd( arglist[ i ] )
+
+    return outgcd
+
+def lcm( *args ): # Общая vararg-функция вызова всех LCM() аргументов по цепи.
+    args, arglist, outlcm = list( args ), [], None
+
+    if len( args ) < 2: # Если слишком мало аргументов -- возбуждаем ошибку.
+        raise RuntimeError( "There's too few arguments for LCM()." )
+    for i in args: # Формируем список из N() из аргументов, попутно проверяя, нет ли ошибок в исходных данных.
+        if isinstance( i, ( Z ) ):
+            arglist.append( abs( i ).toN() )
+        elif isinstance( i, ( N ) ):
+            arglist.append( i )
+        else:
+            print( i )
+            raise RuntimeError( "Object is not a N-digit or Z-digit." )
+
+    outlcm = arglist[ 0 ]
+    for i in range( 1, len( arglist ) ):
+        outlcm = outlcm.lcm( arglist[ i ] ) # Цепной вызов GCD() текущего объекта с предыдущим (начиная со второго).
+    return outlcm
+
+def derivative( arg ): return der( arg )
+def der( arg ):
+    if ( isinstance( arg, ( N, Z, Q ) ) ):
+        return N( 0 )
+    elif ( isinstance( arg, ( poly ) ) ):
+        return arg.der()
+    else:
+        print( arg )
+        raise RuntimeError( "Cannot convert to digit or polynom." )
+
+def degree( arg ): return deg( arg )
+def deg( arg ):
+    if ( isinstance( arg, ( N, Z, Q ) ) ):
+        return N( 0 )
+    elif ( isinstance( arg, ( poly ) ) ):
+        return arg.deg()
+    else:
+        print( arg )
+        raise RuntimeError( "Cannot convert to digit or polynom." )
+
+def lead( arg ): return leadcoef( arg )
+def leading( arg ): return leadcoef( arg )
+def leadingcoef( arg ): return leadcoef( arg )
+def leadcoef( arg ):
+    if ( isinstance( arg, ( N, Z, Q ) ) ):
+        return arg
+    elif ( isinstance( arg, ( poly ) ) ):
+        return arg.lead()
+    else:
+        print( arg )
+        raise RuntimeError( "Cannot convert to digit or polynom." )
+
+def redq( arg ): return reduceq( arg )
+def red( arg ): return reduceq( arg )
+def reduce( arg ): return reduceq( arg )
+def reducefrac( arg ): return reduceq( arg )
+def redfrac( arg ): return reduceq( arg )
+def rdc( arg ): return reduceq( arg )
+def reducefraction( arg ): return reduceq( arg )
+def defrac( arg ): return reduceq( arg )
+def reduceq( arg ):
+    if ( isinstance( arg, ( N, Z ) ) ):
+        return arg
+    elif ( isinstance( arg, ( Q ) ) ):
+        return arg.red()
+    else:
+        print( arg )
+        raise RuntimeError( "Cannot reduce digit." )
+
+def factorize( arg ): factor( arg )
+def factorp( arg ): factor( arg )
+def factor( arg ):
+    if ( isinstance( arg, ( N, Z, Q ) ) ):
+        return arg
+    elif ( isinstance( arg, ( poly ) ) ):
+        return arg.factor_P()
+    else:
+        print( arg )
+        raise RuntimeError( "Cannot convert to digit polynom." )
+
+def nmr( arg ): # Я не знаю, что это, так что пусть пока что будет без алиасов...
+    if ( isinstance( arg, ( N, Z, Q ) ) ):
+        return N( 0 )
+    elif ( isinstance( arg, ( poly ) ) ):
+        return arg.nmr()
+    else:
+        print( arg )
+        raise RuntimeError( "Cannot convert to digit or polynom." )
+
+
+
 class N():
     # Инициализация класса.
     # Здесь: списку "N.digits" присваивается значение первого аргумента (тип: int).
