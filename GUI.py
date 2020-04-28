@@ -35,6 +35,7 @@ root = Tk()
 root.title("Алгебраическая система")                     #название окна
 root.geometry("800x600+300+100")                        #размеры окна и смещение его в центр
 root.resizable(False, False) #Отменить возможнось расширения окна
+root.iconbitmap(r'D:\Programming\Python\Colloquium\icon2.ico')
 input_text=StringVar()
 help_btn = Button(text = "Help",             #текст на кнопке
              background = "#105753",     #цвет кнопки
