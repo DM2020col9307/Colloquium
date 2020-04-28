@@ -52,8 +52,8 @@ root = Tk()
 root.title("Алгебраическая система")                     #название окна
 root.geometry("800x600+300+100")                        #размеры окна и смещение его в центр
 root.resizable(False, False) #Отменить возможнось расширения окна
-root.iconbitmap(r'.\images\icon.ico')
-image1=PhotoImage(file=".\images\icon1.gif")
+root.iconbitmap(r'.\images\icon.ico') #иконка программы
+image1=PhotoImage(file=".\images\icon1.gif") #кнопки
 image2=PhotoImage(file=".\images\icon2.gif")
 image3=PhotoImage(file=".\images\icon3.gif")
 image4=PhotoImage(file=".\images\icon4.gif")
@@ -84,32 +84,32 @@ ok_btn = Button(image=image_ok,
              font = "16",                #высота шрифта
              command = btn_ok       #комманда, выполняемая кнопкой
             )
-ok_btn.place(x=500,y=545, height=40, width=90)
-help_btn.place(x = 700, y = 545, height=40, width=90 )        #позиция кнопоки
-clear_btn.place(x = 600, y = 545, height=40, width=90)       #задается координатами левого верхнего угла
+ok_btn.place(x=260,y=545, height=40, width=90) #Позиция кнопки Ok
+help_btn.place(x = 360, y = 545, height=40, width=90)        #позиция кнопоки help
+clear_btn.place(x = 460, y = 545, height=40, width=90)       #позиция кнопки clear
 
-label = Label(text = "Введите алгебраическое выражение",   #подпись(что делать)
+label = Label(text = "ВВЕДИТЕ АЛГЕБРАИЧЕСКОЕ ВЫРАЖЕНИЕ",   #подпись(что делать)
               foreground = "#105753",               #цвет подписи
-              padx = "10",                          #отступ по горизонтали
-              pady = "10",                          #отступ по вертикали
+              padx = "20",                          #отступ по горизонтали
+              pady = "20",                          #отступ по вертикали
               font="Arial 16"
               )
-label.place(x = 110, y = 5)       #вывод подписи
+label.place(x = 150, y = 60)       #координаты подписи
 
-entry = Entry(textvariable=input_text)                                     #ввод чего-то из консоли
-entry.place(height = 20, width = 480, x = 120, y = 50)   #вывод поля чего-то
+entry = Entry(textvariable=input_text)                                    #окно ввода
+entry.place(height = 20, width = 480, x = 160, y = 130)   #координаты окна ввода
 
-out_label = Label(text = "Результат",        #вывод программы
+out_label = Label(text = "РЕЗУЛЬТАТ",        #надпись
                foreground = "#105753",
                padx = "10",
-               pady = "15",
+               pady = "10",
                font="Arial 16"
                )
-out_label.place(x = 110, y = 70)
-output = Text()
-output.config(state=DISABLED)
-output.place(height = 100, width = 480, x = 120, y = 115)        #координаты поля
-entry.bind('<Return>', press_enter)
+out_label.place(x = 310, y = 170) #координаты надписи
+output = Text() #окно вывода
+output.config(state=DISABLED) #отлючаем возможность ввода в окно вывода
+output.place(height = 100, width = 480, x = 160, y = 220)        #положение окна вывода
+entry.bind('<Return>', press_enter) #обработка нажатия Enter'a
 
 btn1 = Button(
              height = 20, width = 95, compound=TOP, image=image1,
@@ -145,13 +145,13 @@ btn7 = Button(height = 20, width = 95, compound=TOP, image=image7,
 
 
 #Координаты кнопок в левом меню
-btn1.place(x = 5, y = 5)
-btn2.place(x = 5, y = 35)
-btn3.place(x = 5, y = 65)
-btn4.place(x = 5, y = 95)
-btn5.place(x = 5, y = 125)
-btn6.place(x = 5, y = 155)
-btn7.place(x = 5, y = 185)
+btn1.place(x = 20, y = 10)
+btn2.place(x = 130, y = 10)
+btn3.place(x = 240, y = 10)
+btn4.place(x = 350, y = 10)
+btn5.place(x = 460, y = 10)
+btn6.place(x = 570, y = 10)
+btn7.place(x = 680, y = 10)
 
 
 root.mainloop()
