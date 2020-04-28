@@ -57,77 +57,37 @@ output.place(height = 100, width = 480, x = 290, y = 60, anchor = "nw")        #
 
 btn1 = Button(text = "GCD", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
               height = 1, width = 13,
-              ##command = тут нужно написать функцию##
+              command = lambda x='GCD()': (entry.insert(entry.index(INSERT), x), entry.icursor(entry.index(INSERT)-1))
               )
 
 btn2 = Button(text = "LCM", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
                height = 1, width = 13,
-              ##command = тут нужно написать функцию##
+              command = lambda x='LCM()': (entry.insert(entry.index(INSERT), x), entry.icursor(entry.index(INSERT)-1))
               )
 
 btn3 = Button(text = "der", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
               height = 1, width = 13,
-              ##command = тут нужно написать функцию##
+              command = lambda x='der()': (entry.insert(entry.index(INSERT), x), entry.icursor(entry.index(INSERT)-1))
               )
 
-btn4 = Button(text = "derivative", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
+btn4 = Button(text = "reduce", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
               height = 1, width = 13,
-              ##command = тут нужно написать функцию##
+              command = lambda x='reduce()': (entry.insert(entry.index(INSERT), x), entry.icursor(entry.index(INSERT)-1))
               )
 
-btn5 = Button(text = "reduce", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
+btn5 = Button(text = "degree", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
               height = 1, width = 13,
-              ##command = тут нужно написать функцию##
+              command = lambda x='degree()': (entry.insert(entry.index(INSERT), x), entry.icursor(entry.index(INSERT)-1))
               )
 
-btn6 = Button(text = "reduceQ", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
+btn6 = Button(text = "lead", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
               height = 1, width = 13,
-              ##command = тут нужно написать функцию##
+              command = lambda x='lead()': (entry.insert(entry.index(INSERT), x), entry.icursor(entry.index(INSERT)-1))
               )
 
-btn7 = Button(text = "rdc", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
+btn7 = Button(text = "factor", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
               height = 1, width = 13,
-              ##command = тут нужно написать функцию##
-              )
-
-btn8 = Button(text = "reducefraction", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
-              height = 1, width = 13,
-              ##command = тут нужно написать функцию##
-              )
-
-btn9 = Button(text = "defrac", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
-              height = 1, width = 13,
-              ##command = тут нужно написать функцию##
-              )
-
-btn10 = Button(text = "deg", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
-              height = 1, width = 13,
-              ##command = тут нужно написать функцию##
-              )
-
-btn11 = Button(text = "degree", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
-              height = 1, width = 13,
-              ##command = тут нужно написать функцию##
-              )
-
-btn12 = Button(text = "lead", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
-              height = 1, width = 13,
-              ##command = тут нужно написать функцию##
-              )
-
-btn13 = Button(text = "leadcoef", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
-              height = 1, width = 13,
-              ##command = тут нужно написать функцию##
-              )
-
-btn14 = Button(text = "factor", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
-              height = 1, width = 13,
-              ##command = тут нужно написать функцию##
-              )
-
-btn15 = Button(text = "factorize", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
-              height = 1, width = 13,
-              ##command = тут нужно написать функцию##
+              command = lambda x='factor()': (entry.insert(entry.index(INSERT), x), entry.icursor(entry.index(INSERT)-1))
               )
 
 btn1.place(x = 5, y = 5)
@@ -137,13 +97,6 @@ btn4.place(x = 5, y = 95)
 btn5.place(x = 5, y = 125)
 btn6.place(x = 5, y = 155)
 btn7.place(x = 5, y = 185)
-btn8.place(x = 5, y = 215)
-btn9.place(x = 5, y = 245)
-btn10.place(x = 5, y = 275)
-btn11.place(x = 5, y = 305)
-btn12.place(x = 5, y = 335)
-btn13.place(x = 5, y = 365)
-btn14.place(x = 5, y = 395)
-btn15.place(x = 5, y = 425)
+
 
 root.mainloop()
