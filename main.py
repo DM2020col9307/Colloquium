@@ -830,6 +830,17 @@ class poly():
     def lead(self):
         return self.coef[self.deg()]
 
+    def __eq__(self, other):
+        if type(self) != type(other):
+            return tryReverseOp(self, other, '==')
+        if self.deg() != other.deg():
+            return False
+        for i in self.coef.keys():
+            if i in other.coef.keys():
+                if self.coef[i] == other.coef[i]:
+                    continue
+            return False
+        return True
     # Перегрузка операторов.
     def __neg__(self):
         return Z(-1) * self
