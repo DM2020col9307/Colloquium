@@ -1,7 +1,9 @@
-import re # Регулярные выражения, для парсера строки.
+import re  # Регулярные выражения, для парсера строки.
 
 # Парсер входной строки.
 import re
+
+
 def parse(s):
     def forN(s):
         return 'N(' + s[0] + ')'
@@ -10,9 +12,9 @@ def parse(s):
         return 'poly({1:' + (s[0][:-1] and s[0][:-1] or '1') + '})'
 
     def fordx(s):
-        return 'poly({' + s[3]+ ':' + str(s[1] and s[1] or 1) + '})'
+        return 'poly({' + s[3] + ':' + str(s[1] and s[1] or 1) + '})'
 
-    s = s.replace(' ','')
+    s = s.replace(' ', '')
     s = s.lower()
 
     patforn = '(?:(?<!x\^)(?<!\d))\d+(?![xX0-9])'  # поиск всех не-коэффициентов х
@@ -32,138 +34,175 @@ def tryReverseOp(a, b, op):
               type(Q(0)): 3,
               type(poly(0)): 4
               }
-    try: # Пытаемся сравнить типы по "старшинству".
+    try:  # Пытаемся сравнить типы по "старшинству".
         if crutch[type(a)] < crutch[type(b)]:
-            return eval('type(b)(a)' + op + 'b') # Если "a" -- "младше", то приводим "a" к типу "b".
+            return eval('type(b)(a)' + op + 'b')  # Если "a" -- "младше", то приводим "a" к типу "b".
         else:
-            return eval("a" + op + 'type(a)(b)') # Если "b" -- "младше", то приводим "b" к типу "a".
+            return eval("a" + op + 'type(a)(b)')  # Если "b" -- "младше", то приводим "b" к типу "a".
     except:
         print(a, op, b, ": ", type(a), type(b))
-        raise RuntimeError( "Impossible compare type" ) # Если ошибка при сравнении всё-таки произошла, то сообщаем об этом, вызывая исключение.
+        raise RuntimeError(
+            "Impossible compare type")  # Если ошибка при сравнении всё-таки произошла, то сообщаем об этом, вызывая исключение.
 
 
-def gcd( *args ): # Общая vararg-функция вызова всех GCD() аргументов по цепи.
-    args, arglist, mustBePoly, outgcd = list( args ), [], False, None
+def gcd(*args):  # Общая vararg-функция вызова всех GCD() аргументов по цепи.
+    args, arglist, mustBePoly, outgcd = list(args), [], False, None
 
-    if len( args ) < 2: # Если слишком мало аргументов -- возбуждаем ошибку.
-        raise RuntimeError( "There's too few arguments for GCD()." )
+    if len(args) < 2:  # Если слишком мало аргументов -- возбуждаем ошибку.
+        raise RuntimeError("There's too few arguments for GCD().")
 
-    for i in args: # Формируем список из аргументов, попутно проверяя, нет ли ошибок в исходных данных и должен ли результат быть полиномом.
-        if isinstance( i, ( poly ) ):
-            mustBePoly = True # Если в аргументах есть хотя бы один poly(), то результат уже должен быть того же типа.
-            arglist.append( i )
-        elif isinstance( i, ( Z ) ):
-            arglist.append( abs( i ).toN() ) # GCD() и LCM() игнорируют знаки, так что все Z() превращаются в N().
-        elif isinstance( i, ( N ) ):
-            arglist.append( i )
+    for i in args:  # Формируем список из аргументов, попутно проверяя, нет ли ошибок в исходных данных и должен ли результат быть полиномом.
+        if isinstance(i, (poly)):
+            mustBePoly = True  # Если в аргументах есть хотя бы один poly(), то результат уже должен быть того же типа.
+            arglist.append(i)
+        elif isinstance(i, (Z)):
+            arglist.append(abs(i).toN())  # GCD() и LCM() игнорируют знаки, так что все Z() превращаются в N().
+        elif isinstance(i, (N)):
+            arglist.append(i)
         else:
-            print( i )
-            raise RuntimeError( "Object is not a N-digit, Z-digit or polynom." )
+            print(i)
+            raise RuntimeError("Object is not a N-digit, Z-digit or polynom.")
 
-    if mustBePoly: # Здесь приводим все не-poly() объекты к poly() и говорим, что результат -- тоже полином.
-        if not isinstance( arglist[ 0 ], ( poly ) ):
-            arglist[ 0 ] = arglist[ 0 ].toPoly()
-        outgcd = arglist[ 0 ]
+    if mustBePoly:  # Здесь приводим все не-poly() объекты к poly() и говорим, что результат -- тоже полином.
+        if not isinstance(arglist[0], (poly)):
+            arglist[0] = arglist[0].toPoly()
+        outgcd = arglist[0]
 
-        for i in range( 1, len( arglist ) ):
-            if not isinstance( arglist[ i ], ( poly ) ):
-                arglist[ i ] = arglist[ i ].toPoly()
-            outgcd = outgcd.gcd( arglist[ i ] ) # Цепной вызов GCD() текущего объекта с предыдущим (начиная со второго).
-    else: # Если же в агрументов не попалось ни одного полинома, то просто вызываем this.GCD( prev ) у всех объектов подряд, кроме первого.
-        outgcd = arglist[ 0 ]
-        for i in range( 1, len( arglist ) ):
-            outgcd = outgcd.gcd( arglist[ i ] )
+        for i in range(1, len(arglist)):
+            if not isinstance(arglist[i], (poly)):
+                arglist[i] = arglist[i].toPoly()
+            outgcd = outgcd.gcd(arglist[i])  # Цепной вызов GCD() текущего объекта с предыдущим (начиная со второго).
+    else:  # Если же в агрументов не попалось ни одного полинома, то просто вызываем this.GCD( prev ) у всех объектов подряд, кроме первого.
+        outgcd = arglist[0]
+        for i in range(1, len(arglist)):
+            outgcd = outgcd.gcd(arglist[i])
 
     return outgcd
 
-def lcm( *args ): # Общая vararg-функция вызова всех LCM() аргументов по цепи.
-    args, arglist, outlcm = list( args ), [], None
 
-    if len( args ) < 2: # Если слишком мало аргументов -- возбуждаем ошибку.
-        raise RuntimeError( "There's too few arguments for LCM()." )
-    for i in args: # Формируем список из N() из аргументов, попутно проверяя, нет ли ошибок в исходных данных.
-        if isinstance( i, ( Z ) ):
-            arglist.append( abs( i ).toN() )
-        elif isinstance( i, ( N ) ):
-            arglist.append( i )
+def lcm(*args):  # Общая vararg-функция вызова всех LCM() аргументов по цепи.
+    args, arglist, outlcm = list(args), [], None
+
+    if len(args) < 2:  # Если слишком мало аргументов -- возбуждаем ошибку.
+        raise RuntimeError("There's too few arguments for LCM().")
+    for i in args:  # Формируем список из N() из аргументов, попутно проверяя, нет ли ошибок в исходных данных.
+        if isinstance(i, (Z)):
+            arglist.append(abs(i).toN())
+        elif isinstance(i, (N)):
+            arglist.append(i)
         else:
-            print( i )
-            raise RuntimeError( "Object is not a N-digit or Z-digit." )
+            print(i)
+            raise RuntimeError("Object is not a N-digit or Z-digit.")
 
-    outlcm = arglist[ 0 ]
-    for i in range( 1, len( arglist ) ):
-        outlcm = outlcm.lcm( arglist[ i ] ) # Цепной вызов GCD() текущего объекта с предыдущим (начиная со второго).
+    outlcm = arglist[0]
+    for i in range(1, len(arglist)):
+        outlcm = outlcm.lcm(arglist[i])  # Цепной вызов GCD() текущего объекта с предыдущим (начиная со второго).
     return outlcm
 
-def derivative( arg ): return der( arg )
-def der( arg ):
-    if ( isinstance( arg, ( N, Z, Q ) ) ):
-        return N( 0 )
-    elif ( isinstance( arg, ( poly ) ) ):
+
+def derivative(arg): return der(arg)
+
+
+def der(arg):
+    if (isinstance(arg, (N, Z, Q))):
+        return N(0)
+    elif (isinstance(arg, (poly))):
         return arg.der()
     else:
-        print( arg )
-        raise RuntimeError( "Cannot convert to digit or polynom." )
+        print(arg)
+        raise RuntimeError("Cannot convert to digit or polynom.")
 
-def degree( arg ): return deg( arg )
-def deg( arg ):
-    if ( isinstance( arg, ( N, Z, Q ) ) ):
-        return N( 0 )
-    elif ( isinstance( arg, ( poly ) ) ):
+
+def degree(arg): return deg(arg)
+
+
+def deg(arg):
+    if (isinstance(arg, (N, Z, Q))):
+        return N(0)
+    elif (isinstance(arg, (poly))):
         return arg.deg()
     else:
-        print( arg )
-        raise RuntimeError( "Cannot convert to digit or polynom." )
+        print(arg)
+        raise RuntimeError("Cannot convert to digit or polynom.")
 
-def lead( arg ): return leadcoef( arg )
-def leading( arg ): return leadcoef( arg )
-def leadingcoef( arg ): return leadcoef( arg )
-def leadcoef( arg ):
-    if ( isinstance( arg, ( N, Z, Q ) ) ):
+
+def lead(arg): return leadcoef(arg)
+
+
+def leading(arg): return leadcoef(arg)
+
+
+def leadingcoef(arg): return leadcoef(arg)
+
+
+def leadcoef(arg):
+    if (isinstance(arg, (N, Z, Q))):
         return arg
-    elif ( isinstance( arg, ( poly ) ) ):
+    elif (isinstance(arg, (poly))):
         return arg.lead()
     else:
-        print( arg )
-        raise RuntimeError( "Cannot convert to digit or polynom." )
+        print(arg)
+        raise RuntimeError("Cannot convert to digit or polynom.")
 
-def redq( arg ): return reduceq( arg )
-def red( arg ): return reduceq( arg )
-def reduce( arg ): return reduceq( arg )
-def reducefrac( arg ): return reduceq( arg )
-def redfrac( arg ): return reduceq( arg )
-def rdc( arg ): return reduceq( arg )
-def reducefraction( arg ): return reduceq( arg )
-def defrac( arg ): return reduceq( arg )
-def reduceq( arg ):
-    if ( isinstance( arg, ( N, Z ) ) ):
+
+def redq(arg): return reduceq(arg)
+
+
+def red(arg): return reduceq(arg)
+
+
+def reduce(arg): return reduceq(arg)
+
+
+def reducefrac(arg): return reduceq(arg)
+
+
+def redfrac(arg): return reduceq(arg)
+
+
+def rdc(arg): return reduceq(arg)
+
+
+def reducefraction(arg): return reduceq(arg)
+
+
+def defrac(arg): return reduceq(arg)
+
+
+def reduceq(arg):
+    if (isinstance(arg, (N, Z))):
         return arg
-    elif ( isinstance( arg, ( Q ) ) ):
+    elif (isinstance(arg, (Q))):
         return arg.red()
     else:
-        print( arg )
-        raise RuntimeError( "Cannot reduce digit." )
+        print(arg)
+        raise RuntimeError("Cannot reduce digit.")
 
-def factorize( arg ): factor( arg )
-def factorp( arg ): factor( arg )
-def factor( arg ):
-    if ( isinstance( arg, ( N, Z, Q ) ) ):
+
+def factorize(arg): factor(arg)
+
+
+def factorp(arg): factor(arg)
+
+
+def factor(arg):
+    if (isinstance(arg, (N, Z, Q))):
         return arg
-    elif ( isinstance( arg, ( poly ) ) ):
+    elif (isinstance(arg, (poly))):
         return arg.factor_P()
     else:
-        print( arg )
-        raise RuntimeError( "Cannot convert to digit polynom." )
+        print(arg)
+        raise RuntimeError("Cannot convert to digit polynom.")
 
-def nmr( arg ): # Я не знаю, что это, так что пусть пока что будет без алиасов...
-    if ( isinstance( arg, ( N, Z, Q ) ) ):
-        return N( 0 )
-    elif ( isinstance( arg, ( poly ) ) ):
+
+def nmr(arg):  # Я не знаю, что это, так что пусть пока что будет без алиасов...
+    if (isinstance(arg, (N, Z, Q))):
+        return N(0)
+    elif (isinstance(arg, (poly))):
         return arg.nmr()
     else:
-        print( arg )
-        raise RuntimeError( "Cannot convert to digit or polynom." )
-
+        print(arg)
+        raise RuntimeError("Cannot convert to digit or polynom.")
 
 
 class N():
@@ -199,17 +238,17 @@ class N():
     # Перегрузка операторов.
 
     def __neg__(self):
-        return Z(-1)*self
+        return Z(-1) * self
 
     # "Less than", "<"
     def __lt__(self, other):
-        if type(self) != type(other): # Отправляем в обменную централь, если типы разнятся.
+        if type(self) != type(other):  # Отправляем в обменную централь, если типы разнятся.
             return tryReverseOp(self, other, '<')
         if (len(self) < len(other)):
             return True
         elif (len(self) > len(other) or (self.digits == [0] and other.digits == [0])):
             return False
-        else: # Последовательное сравнение всех цифр, если длины оказались одинаковыми.
+        else:  # Последовательное сравнение всех цифр, если длины оказались одинаковыми.
             for i in range(len(self)):
                 if self.digits[i] < other.digits[i]:
                     return True
@@ -259,7 +298,7 @@ class N():
 
     # Переопределение сложения.
     def __add__(self, other):
-        if type(self) != type(other): # Отправляем в обменную централь, если типы разнятся.
+        if type(self) != type(other):  # Отправляем в обменную централь, если типы разнятся.
             return tryReverseOp(self, other, '+')
 
         # Дополняем списки цифр до одинаковой длины.
@@ -271,12 +310,12 @@ class N():
         # Забиваем массив "out" нулями по обновлённой длине "self".
         out = [0] * len(self)
 
-        for i in range(len(self) - 1, -1, -1): # Складываем все цифры, начиная с младшей.
+        for i in range(len(self) - 1, -1, -1):  # Складываем все цифры, начиная с младшей.
             out[i] += self.digits[i] + other.digits[i]
-            if (out[i] > 9): # Если сумма текущей позиции больше девяти, то переносим единицу в следующий разряд.
+            if (out[i] > 9):  # Если сумма текущей позиции больше девяти, то переносим единицу в следующий разряд.
                 if (i == 0):
                     out.insert(0, out[i] // 10)
-                    out[i+1] %= 10
+                    out[i + 1] %= 10
                 else:
                     out[i - 1] = out[i] // 10
                 out[i] %= 10
@@ -285,11 +324,11 @@ class N():
 
     # Перегрузка "-"
     def __sub__(self, other):
-        if type(self) != type(other): # Отправляем в обменную централь, если типы разнятся.
+        if type(self) != type(other):  # Отправляем в обменную централь, если типы разнятся.
             return tryReverseOp(self, other, '-')
         signMustExist = False
 
-        if (self < other): # Говорим, что знак в результате будет, если левое число меньше правого.
+        if (self < other):  # Говорим, что знак в результате будет, если левое число меньше правого.
             self, other = other, self
             signMustExist = True
 
@@ -302,22 +341,22 @@ class N():
         # Забиваем массив "out" нулями по обновлённой длине "self".
         out = [0] * (len(self) + 1)
 
-        for i in range(len(self), 0, -1): # Вычитаем, начиная с последней цифры.
+        for i in range(len(self), 0, -1):  # Вычитаем, начиная с последней цифры.
             if (self.digits[i - 1] - other.digits[i - 1] < 0 and i != 1):
                 self.digits[i - 2] -= 1
                 self.digits[i - 1] += 10
             out[i] += self.digits[i - 1] - other.digits[i - 1]
 
         while (out and out[0] == 0):
-            out.pop(0) # Убираем нули, если они вдруг появились.
+            out.pop(0)  # Убираем нули, если они вдруг появились.
 
-        if (not out): # Если всё -- нули, то возвращаем "0".
+        if (not out):  # Если всё -- нули, то возвращаем "0".
             return N(0)
-        elif (signMustExist): # Если должен быть знак, то возвращаем Z( out ).
+        elif (signMustExist):  # Если должен быть знак, то возвращаем Z( out ).
             newz = Z(out)
             newz.sign = True
             return newz
-        else: # Остальные случаи.
+        else:  # Остальные случаи.
             return N(''.join(map(str, out)))
 
     def muld(self, d):
@@ -334,11 +373,11 @@ class N():
         return N(lst)
 
     def mulk(self, k):
-        return N(self.digits + [0] * k) # Изящное умножение в реалиях коллоквиума...
+        return N(self.digits + [0] * k)  # Изящное умножение в реалиях коллоквиума...
 
     # "*"
     def __mul__(self, other):
-        if type(self) != type(other): # Отправляем в обменную централь, если типы разнятся.
+        if type(self) != type(other):  # Отправляем в обменную централь, если типы разнятся.
             return tryReverseOp(self, other, '*')
         lst = []
         for i in range(len(other)):
@@ -368,7 +407,9 @@ class N():
 
     # магия "//" здесь целая часть ( не уверен, что работает во всех случаях )
     def __floordiv__(self, other):
-        if type(self) != type(other): # Отправляем в обменную централь, если типы разнятся.
+        if (other==N(0)):
+            raise RuntimeError("Second number can't be equal to the zero")
+        if type(self) != type(other):  # Отправляем в обменную централь, если типы разнятся.
             return tryReverseOp(self, other, '//')
         lst = []
         lst += self.digits
@@ -384,7 +425,9 @@ class N():
 
     # "%"
     def __mod__(self, other):
-        if type(self) != type(other): # Отправляем в обменную централь, если типы разнятся.
+        if (other == N(0)):
+            raise RuntimeError("Second number can't be equal to the zero")
+        if type(self) != type(other):  # Отправляем в обменную централь, если типы разнятся.
             return tryReverseOp(self, other, '%')
         n = self // other
         n = n * other
@@ -392,8 +435,10 @@ class N():
         return n
 
     # Перегрузка "/"
-    def __truediv__(self, other): # Обёртка для "//" -- по-идее, просто передача управления туда.
-        if type(self) != type(other): # Отправляем в обменную централь, если типы разнятся.
+    def __truediv__(self, other):  # Обёртка для "//" -- по-идее, просто передача управления туда.
+        if (other == N(0)):
+            raise RuntimeError("Second number can't be equal to the zero")
+        if type(self) != type(other):  # Отправляем в обменную централь, если типы разнятся.
             return tryReverseOp(self, other, '//')
         if (self % other == N(0)):
             return self // other
@@ -409,17 +454,16 @@ class N():
         lst2 += other.digits
         tmp1 = N(lst1)
         tmp2 = N(lst2)
-        while tmp2 != N(0): # Стандартный алгоритм нахождения НОД.
+        while tmp2 != N(0):  # Стандартный алгоритм нахождения НОД.
             tmp1 = tmp1 % tmp2
             tmp1, tmp2 = tmp2, tmp1
         return tmp1
 
     # НОК
-    def lcm(self, other): # НОК( a, b ) == ( a * b )/НОД( a, b ).
+    def lcm(self, other):  # НОК( a, b ) == ( a * b )/НОД( a, b ).
         res = self * other
         res = res / self.gcd(other)
         return res
-
 
 
 class Z():
@@ -468,7 +512,7 @@ class Z():
     # Перегрузка операторов.
 
     def __neg__(self):
-        return Z(-1)*self
+        return Z(-1) * self
 
     def __gt__(self, other):
         if type(self) != type(other):
@@ -515,9 +559,9 @@ class Z():
         if type(self) != type(other):
             return tryReverseOp(self, other, "+")
         if self.sign and other.sign:
-            return Z('-'+str(abs(self).toN()+abs(other).toN()))
+            return Z('-' + str(abs(self).toN() + abs(other).toN()))
         if not (self.sign or other.sign):
-            return Z(self.toN()+other.toN())
+            return Z(self.toN() + other.toN())
         elif self.sign:
             return Z(other.toN() - abs(self).toN())
         else:
@@ -529,15 +573,19 @@ class Z():
         return Z(("-" if self.sign ^ other.sign else "") + str(abs(self).toN() * abs(other).toN()))
 
     def __floordiv__(self, other):
+        if (other == Z(0)):
+            raise RuntimeError("Second number can't be equal to the zero")
         if type(self) != type(other):
             return tryReverseOp(self, other, "//")
         res = abs(self).toN() // abs(other).toN()
-        m = abs(self).toN()%abs(other).toN()
+        m = abs(self).toN() % abs(other).toN()
         if self.sign and m != N(0):
             res = res + N(1)
         return Z(("-" if self.sign ^ other.sign else "") + str(res))
 
     def __truediv__(self, other):
+        if (other == Z(0)):
+            raise RuntimeError("Second number can't be equal to the zero")
         if type(self) != type(other):
             return tryReverseOp(self, other, "/")
         if (self % other == Z(0)):
@@ -546,6 +594,8 @@ class Z():
             return Q(self, other)
 
     def __mod__(self, other):
+        if (other == Z(0)):
+            raise RuntimeError("Second number can't be equal to the zero")
         if type(self) != type(other):
             return tryReverseOp(self, other, "%")
         return self - self // other * other
@@ -556,12 +606,12 @@ class Z():
         other = other * Z(-1)
         return self + other
 
-    def gcd( self, other ):
-        return N( self.digits ).GCD( N( other.digits ) )
+    def gcd(self, other):
+        return N(self.digits).GCD(N(other.digits))
 
-    def lcm( self, other ):
-        return N( self.digits ).LCM( N( other.digits ) )
-    
+    def lcm(self, other):
+        return N(self.digits).LCM(N(other.digits))
+
 
 class Q():
     def __init__(self, num, denum=N(1)):
@@ -588,7 +638,7 @@ class Q():
 
     def __str__(self):
         res = str(self.num) + (
-                    str(self.denum) != '1' and "/{}".format(self.denum) or "")  # если знаменатель == 1, не пишется
+                str(self.denum) != '1' and "/{}".format(self.denum) or "")  # если знаменатель == 1, не пишется
         # res = "{}/{}".format(self.num, self.denum)
         return res
 
@@ -619,11 +669,10 @@ class Q():
     def toPoly(self):
         return poly(self)
 
-
     # Перегрузка операторов.
 
     def __neg__(self):
-        return Z(-1)*self
+        return Z(-1) * self
 
     def __add__(self, other):
         if type(self) != type(other):
@@ -651,6 +700,8 @@ class Q():
         return Q(num, denum).red()
 
     def __truediv__(self, other):
+        if (other == Q(0)):
+            raise RuntimeError("Second number can't be equal to the zero")
         if type(self) != type(other):
             return tryReverseOp(self, other, '/')
         num = self.num * other.denum
@@ -659,6 +710,8 @@ class Q():
 
     # хз, как это будет работать
     def __floordiv__(self, other):
+        if (other == Q(0)):
+            raise RuntimeError("Second number can't be equal to the zero")
         if type(self) != type(other):
             return tryReverseOp(self, other, '//')
         tmp = self / other
@@ -667,6 +720,8 @@ class Q():
 
     # не уверен, что деление с остатком имеет отношение к дробям, но пусть будет
     def __mod__(self, other):
+        if (other == Q(0)):
+            raise RuntimeError("Second number can't be equal to the zero")
         if type(self) != type(other):
             return tryReverseOp(self, other, '%')
         tmp = self / other
@@ -716,7 +771,7 @@ class poly():
                 if isinstance(coeflist[i], Q):
                     self.coef.update({i: coeflist[i]})
                 else:
-                    self.coef.update({i:Q(coeflist[i])})
+                    self.coef.update({i: Q(coeflist[i])})
 
         elif isinstance(coeflist, (Z, N)):
             self.coef = {0: coeflist.toQ()}
@@ -737,7 +792,7 @@ class poly():
 
     def __str__(self):
         coef, out = self.coef, ""
-        if self.lead()==Q(0):  # Not "self.deg()" (see "poly({ 0: Q( 1 ) })").
+        if self.lead() == Q(0):  # Not "self.deg()" (see "poly({ 0: Q( 1 ) })").
             out = "0"
         else:
             key = sorted(list(coef.keys()))[::-1]
@@ -774,7 +829,7 @@ class poly():
     # Перегрузка операторов.
 
     def __neg__(self):
-        return Z(-1)*self
+        return Z(-1) * self
 
     def __add__(self, other):
         if type(self) != type(other):
@@ -834,6 +889,8 @@ class poly():
 
     # вернет целую часть
     def __truediv__(self, other):
+        if (other == poly(0)):
+            raise RuntimeError("Second number can't be equal to the zero")
         if type(self) != type(other):
             return tryReverseOp(self, other, '/')
         p1 = poly(self.coef)
@@ -848,6 +905,8 @@ class poly():
         return res
 
     def __mod__(self, other):
+        if (other == poly(0)):
+            raise RuntimeError("Second number can't be equal to the zero")
         if type(self) != type(other):
             return tryReverseOp(self, other, '%')
         p1 = poly(self.coef)
@@ -861,6 +920,8 @@ class poly():
         return p1
 
     def __floordiv__(self, other):
+        if (other == poly(0)):
+            raise RuntimeError("Second number can't be equal to the zero")
         if type(self) != type(other):
             return tryReverseOp(self, other, '//')
         return self / other
@@ -872,7 +933,7 @@ class poly():
             poly1 = poly1 % poly2
             poly1, poly2 = poly2, poly1
 
-        poly1 = poly1.mulq(Q(1)/ poly1.lead())
+        poly1 = poly1.mulq(Q(1) / poly1.lead())
         return poly1
 
     # Производная многочлена.
@@ -892,10 +953,8 @@ class poly():
         return res
 
 
-
-
-#print( eval( 'gcd( N( 123444 ), N( 8736492 ), Z( 8289798 ) )' ) )
-#print( eval( 'derivative( poly({  1: Q( 3, 4 ), 7: Q( 17, 9 ), 9992: Z( -8 )   }) )' ) )
+# print( eval( 'gcd( N( 123444 ), N( 8736492 ), Z( 8289798 ) )' ) )
+# print( eval( 'derivative( poly({  1: Q( 3, 4 ), 7: Q( 17, 9 ), 9992: Z( -8 )   }) )' ) )
 '''print( poly({  -4: Q( 5, 4 )  }) + poly({  -4: Q( 7, 17 ), 17: Q( -3 )  }) )
 print(poly('1 2 2'))
 print(poly('2 2')/poly('1 1'))
@@ -905,7 +964,5 @@ print(poly('-1'))
 print(eval('N(5) * N(9) / N(4) + N(3)'))
 #print(poly('1 -20 175 -878 2779 -5744 7737 -6534 3132 -648').nmr())'''
 
-#s1 = '5 * 9 / 4 +3x^2'
-#print(eval(parse(s1)))
-
-
+# s1 = '5 * 9 / 4 +3x^2'
+# print(eval(parse(s1)))
