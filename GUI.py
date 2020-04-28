@@ -2,11 +2,12 @@ from tkinter import*
 from tkinter import messagebox
 from main import *
 
-def clear():                            #функция очистки поля ввода
+def clear():
+    """Функция очистки полей ввода и вывода"""
     entry.delete(0, END)
     output.delete(1.0,END)
-
 def btn_help():
+    """Функция вывода информативного окна для помощи пользователю в пользовании программы"""
     information = '''Добро пожаловать в алгебраическую систему для вычислений.
 С помощью данной программы Вы можете выполнять любые арифметические действия в множествах N, Z, Q и Полиномов.
 После ввода команды необходимо ввести желаемое число из N,Z,Q или Полиномов в скобки. 
@@ -23,15 +24,17 @@ def btn_help():
 '''
     messagebox.showinfo("Help", information)
 def btn_ok():
+    """Функция, отвечающая за действия при нажатии на кнопку OK"""
     output.delete(1.0,END)
     try:
         s=output.insert(1.0,eval(parse(input_text.get())))
     except Exception as e:
-        output.insert(1.0,e)
+        messagebox.showinfo("ОШИБКА!", e) #Вывод текста ошибки во всплывающее окно
 
 root = Tk()
-root.title("Наш интерфейс")                     #название окна
-root.geometry("800x600")                        #размеры окна
+root.title("Алгебраическая система")                     #название окна
+root.geometry("800x600+300+100")                        #размеры окна и смещение его в центр
+root.resizable(False, False) #Отменить возможнось расширения окна
 input_text=StringVar()
 help_btn = Button(text = "Help",             #текст на кнопке
              background = "#105753",     #цвет кнопки
@@ -92,42 +95,43 @@ output.place(height = 100, width = 480, x = 120, y = 115)        #координ
 btn1 = Button(text = "GCD", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
               height = 1, width = 13,
               command = lambda x='GCD()': (entry.insert(entry.index(INSERT), x), entry.icursor(entry.index(INSERT)-1))
-              )
+              ) #При нажатии на кнопку будет введен текст, хранящийся в x
 
 btn2 = Button(text = "LCM", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
                height = 1, width = 13,
               command = lambda x='LCM()': (entry.insert(entry.index(INSERT), x), entry.icursor(entry.index(INSERT)-1))
-              )
+              ) #При нажатии на кнопку будет введен текст, хранящийся в x
 
 btn3 = Button(text = "der", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
               height = 1, width = 13,
               command = lambda x='der()': (entry.insert(entry.index(INSERT), x), entry.icursor(entry.index(INSERT)-1))
-              )
+              ) #При нажатии на кнопку будет введен текст, хранящийся в x
 
 
 btn4 = Button(text = "reduce", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
               height = 1, width = 13,
               command = lambda x='reduce()': (entry.insert(entry.index(INSERT), x), entry.icursor(entry.index(INSERT)-1))
-              )
+              ) #При нажатии на кнопку будет введен текст, хранящийся в x
 
 
 btn5 = Button(text = "deg", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
               height = 1, width = 13,
               command = lambda x='deg()': (entry.insert(entry.index(INSERT), x), entry.icursor(entry.index(INSERT)-1))
-              )
+              ) #При нажатии на кнопку будет введен текст, хранящийся в x
 
 
 btn6 = Button(text = "lead", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
               height = 1, width = 13,
               command = lambda x='lead()': (entry.insert(entry.index(INSERT), x), entry.icursor(entry.index(INSERT)-1))
-              )
+              ) #При нажатии на кнопку будет введен текст, хранящийся в x
 
 btn7 = Button(text = "factor", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
               height = 1, width = 13,
               command = lambda x='factor()': (entry.insert(entry.index(INSERT), x), entry.icursor(entry.index(INSERT)-1))
-              )
+              ) #При нажатии на кнопку будет введен текст, хранящийся в x
 
 
+#Координаты кнопок в левом меню
 btn1.place(x = 5, y = 5)
 btn2.place(x = 5, y = 35)
 btn3.place(x = 5, y = 65)
