@@ -386,6 +386,18 @@ class N():
             n = i + n
         return n
 
+    def __pow__(self, other):
+        if (not isinstance(other, (N))):
+            raise RuntimeError("Power is not a natural digit.")
+        out = N(1)
+        while other != N(0):
+            out *= self
+            other -= N(1)
+        return out
+
+    def __xor__(self, other):
+        return self ** other
+
     def nzer(self):
         if self.digits[0] == 0:
             return False
@@ -573,6 +585,19 @@ class Z():
             return tryReverseOp(self, other, "*")
         return Z(("-" if self.sign ^ other.sign else "") + str(abs(self).toN() * abs(other).toN())) #Проверяем знаки и добавлем при ниобходимости
 
+    def __pow__(self, other):
+        if (not isinstance(other, (N))):
+            raise RuntimeError("Power is not a natural digit.")
+        out = Z(1)
+        out.sign = self.sign and other % 2 == 0
+        while other != N(0):
+            out *= self
+            other -= N(1)
+        return out
+
+    def __xor__(self, other):
+        return self ** other
+
     def __floordiv__(self, other):
         if (other == Z(0)):
             raise RuntimeError("Second number can't be equal to the zero")
@@ -703,6 +728,19 @@ class Q():
         denum = self.denum * other.denum
         return Q(num, denum).red()
 
+    def __pow__(self, other):
+        if (not isinstance(other, (N))):
+            raise RuntimeError("Power is not a natural digit.")
+        out = Q(1)
+        out.num.sign = self.num.sign and other % 2 == 0
+        while other != N(0):
+            out *= self
+            other -= N(1)
+        return out
+
+    def __xor__(self, other):
+        return self ** other
+
     def __truediv__(self, other):
         if (other == Q(0)):
             raise RuntimeError("Second number can't be equal to the zero")
@@ -830,6 +868,10 @@ class poly():
     def lead(self):
         return self.coef[self.deg()]
 
+    # Перегрузка операторов.
+    def __neg__(self):
+        return Z(-1) * self
+
     def __eq__(self, other):
         if type(self) != type(other):
             return tryReverseOp(self, other, '==')
@@ -841,9 +883,6 @@ class poly():
                     continue
             return False
         return True
-    # Перегрузка операторов.
-    def __neg__(self):
-        return Z(-1) * self
 
     def __add__(self, other):
         if type(self) != type(other):
