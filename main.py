@@ -1,5 +1,6 @@
 import re # Регулярные выражения, для парсера строки.
 
+# Парсер входной строки.
 def parse(s): 
     def forN(s):
         return 'N(' + s[0] + ')'
@@ -20,23 +21,24 @@ def parse(s):
     return s
 
 
+# Cтабилизация типа -- приводит действие к более "старшему" типу в порядке N -> Z -> Q -> poly.
 def tryReverseOp(a, b, op):
     crutch = {type(N(0)): 1,
               type(Z(0)): 2,
               type(Q(0)): 3,
               type(poly(0)): 4
               }
-    try: # Пытаемся сравнить типы по "старшенству".
+    try: # Пытаемся сравнить типы по "старшинству".
         if crutch[type(a)] < crutch[type(b)]:
             return eval('type(b)(a)' + op + 'b') # Если "a" -- "младше", то приводим "a" к типу "b".
         else:
             return eval("a" + op + 'type(a)(b)') # Если "b" -- "младше", то приводим "b" к типу "a".
     except:
         print(a, op, b, ": ", type(a), type(b))
-        raise RuntimeError # Если ошибка при сравнении всё-таки произошла, то сообщаем об этом, вызывая исключение.
+        raise RuntimeError( "Impossible compare type" ) # Если ошибка при сравнении всё-таки произошла, то сообщаем об этом, вызывая исключение.
 
 
-class N:
+class N():
     # Инициализация класса.
     # Здесь: списку "N.digits" присваивается значение первого аргумента (тип: int).
     # Пример: "N( 75044 )" создаст объект класса "N()" с "digits = [7, 5, 0, 4, 4]".
@@ -65,6 +67,11 @@ class N:
 
     def toPoly(self):
         return poly(self)
+
+    # Перегрузка операторов.
+
+    def __neg__(self):
+        return Z(-1)*self
 
     # "Less than", "<"
     def __lt__(self, other):
@@ -285,8 +292,6 @@ class N:
         res = res / self.gcd(other)
         return res
 
-    def __neg__(self):
-        return Z(-1)*self
 
 
 class Z():
@@ -331,6 +336,11 @@ class Z():
 
     def toPoly(self):
         return poly(self)
+
+    # Перегрузка операторов.
+
+    def __neg__(self):
+        return Z(-1)*self
 
     def __gt__(self, other):
         if type(self) != type(other):
@@ -385,9 +395,6 @@ class Z():
         else:
             return Z(self.toN() - abs(other).toN())
 
-
-
-
     def __mul__(self, other):
         if type(self) != type(other):
             return tryReverseOp(self, other, "*")
@@ -421,9 +428,12 @@ class Z():
         other = other * Z(-1)
         return self + other
 
-    def __neg__(self):
-        return Z(-1)*self
+    def gcd( self, other ):
+        return N( self.digits ).GCD( N( other.digits ) )
 
+    def lcm( self, other ):
+        return N( self.digits ).LCM( N( other.digits ) )
+    
 
 class Q():
     def __init__(self, num, denum=N(1)):
@@ -480,6 +490,12 @@ class Q():
 
     def toPoly(self):
         return poly(self)
+
+
+    # Перегрузка операторов.
+
+    def __neg__(self):
+        return Z(-1)*self
 
     def __add__(self, other):
         if type(self) != type(other):
@@ -553,9 +569,6 @@ class Q():
     def __ge__(self, other):
         return not self < other
 
-    def __neg__(self):
-        return Z(-1)*self
-
 
 class poly():
     # Здесь: poly() имеет в себе одну переменную-словарь "coef", в которой хранятся
@@ -626,11 +639,14 @@ class poly():
     def deg(self):
         return max(list(self.coef.keys()))
 
-    # Ведущий (самый старший) аргумент
+    # Ведущий (старший) коэффициент.
     def lead(self):
         return self.coef[self.deg()]
 
     # Перегрузка операторов.
+
+    def __neg__(self):
+        return Z(-1)*self
 
     def __add__(self, other):
         if type(self) != type(other):
@@ -678,16 +694,6 @@ class poly():
         for i in other.coef.keys():
             out = out + self.mulqx(other.coef[i], i)
         return out
-
-    '''
-        out = {}
-        for i in self.coef:
-            for j in other.coef:
-                if i+j in out:
-                    out[i+j] = out[i+j] + self.coef[i] * other.coef[j]
-                else:
-                    out.update({i+j:self.coef[i] * other.coef[j]})
-        return poly(out)'''
 
     def factor_P(self):
         a = poly(self.coef)
@@ -750,24 +756,26 @@ class poly():
                 poly_derivative = poly_derivative + poly({i - 1: Q(i) * pol.coef[i]})
         return poly_derivative
 
-    # кратные корни в простые
+    # Кратные корни в простые.
     def nmr(self):
         der = self.der()
         gcd = self.gcd(der)
         res = self / gcd
         return res
 
-    def __neg__(self):
-        return Z(-1)*self
 
-print( poly({  -4: Q( 5, 4 )  }) + poly({  -4: Q( 7, 17 ), 17: Q( -3 )  }) )
+
+
+print( eval( 'gcd( N( 123444 ), N( 8736492 ), Z( 8289798 ) )' ) )
+print( eval( 'derivative( poly({  1: Q( 3, 4 ), 7: Q( 17, 9 ), 9992: Z( -8 )   }) )' ) )
+'''print( poly({  -4: Q( 5, 4 )  }) + poly({  -4: Q( 7, 17 ), 17: Q( -3 )  }) )
 print(poly('1 2 2'))
 print(poly('2 2')/poly('1 1'))
 print(poly('1 2 1').gcd(poly('2 2')))
 print(poly({100:1})/poly({100:1}))
 print(poly('-1'))
 print(eval('N(5) * N(9) / N(4) + N(3)'))
-#print(poly('1 -20 175 -878 2779 -5744 7737 -6534 3132 -648').nmr())
+#print(poly('1 -20 175 -878 2779 -5744 7737 -6534 3132 -648').nmr())'''
 
 #s1 = '5 * 9 / 4 +3'
 #print(eval(parse(s1)))
