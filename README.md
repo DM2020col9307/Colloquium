@@ -104,17 +104,17 @@ poly():
 	list coef[] (Q);
 
 P1	add_P_P		overload +
-	Илья В. (+)
+	Ксения, Илья В. (+)
 P2	sub_P_P		overload -
-	Илья В. (+)
+	Маргарита, Илья В. (+)
 P3	mul_P_Q		overload \*
-	Илья В. (+)
+	Ксения, Илья В. (+)
 P4	mul_P_x^k	overload \*
-	Илья В. (+)
+	Маргарита, Илья В. (+)
 P5	leadcoef_P	Q = P.lead() 
-	Ярослав (+)
+	Ксения, Ярослав (+)
 P6	deg_P		N = P.deg()
-	Ярослав (+)
+	Маргарита, Ярослав (+)
 P7	factor_P	poly = P.factor()
 	Илья В. (+)
 P8	mul_P_P		overload \*
