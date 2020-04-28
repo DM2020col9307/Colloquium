@@ -3,7 +3,6 @@ import re  # Регулярные выражения, для парсера ст
 # Парсер входной строки.
 import re
 
-
 def parse(s):
     def forN(s):
         return 'N(' + s[0] + ')'
@@ -12,9 +11,11 @@ def parse(s):
         return 'poly({1:' + (s[0][:-1] and s[0][:-1] or '1') + '})'
 
     def fordx(s):
-        return 'poly({' + s[3] + ':' + str(s[1] and s[1] or 1) + '})'
 
-    s = s.replace(' ', '')
+        return 'poly({' + s[3]+ ':' + str(s[1] and s[1] or 1) + '})'
+
+    s = s.replace(' ','')
+
     s = s.lower()
 
     patforn = '(?:(?<!x\^)(?<!\d))\d+(?![xX0-9])'  # поиск всех не-коэффициентов х
@@ -953,8 +954,7 @@ class poly():
         return res
 
 
-# print( eval( 'gcd( N( 123444 ), N( 8736492 ), Z( 8289798 ) )' ) )
-# print( eval( 'derivative( poly({  1: Q( 3, 4 ), 7: Q( 17, 9 ), 9992: Z( -8 )   }) )' ) )
+
 '''print( poly({  -4: Q( 5, 4 )  }) + poly({  -4: Q( 7, 17 ), 17: Q( -3 )  }) )
 print(poly('1 2 2'))
 print(poly('2 2')/poly('1 1'))
@@ -964,5 +964,4 @@ print(poly('-1'))
 print(eval('N(5) * N(9) / N(4) + N(3)'))
 #print(poly('1 -20 175 -878 2779 -5744 7737 -6534 3132 -648').nmr())'''
 
-# s1 = '5 * 9 / 4 +3x^2'
-# print(eval(parse(s1)))
+

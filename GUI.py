@@ -101,7 +101,33 @@ btn2 = Button(text = "LCM", background = "#105753", foreground = "#D6EBEA", acti
 
 btn3 = Button(text = "der", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
               height = 1, width = 13,
-              command = lambda x='der()': (entry.insert(entry.index(INSERT), x), entry.icursor(entry.index(INSERT)-1))
+
+              command = btn_3_entry
+              )
+
+btn4 = Button(text = "reduce", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
+              height = 1, width = 13,
+              command = btn_4_entry
+              )
+
+btn5 = Button(text = "degree", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
+              height = 1, width = 13,
+              command = btn_5_entry
+              )
+
+btn6 = Button(text = "lead", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
+              height = 1, width = 13,
+              command = btn_6_entry
+              )
+
+btn7 = Button(text = "factor", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
+              height = 1, width = 13,
+              command = btn_7_entry
+              )
+
+btn8 = Button(text = "reducefraction", background = "#105753", foreground = "#D6EBEA", activebackground = "#14837D",
+              height = 1, width = 13,
+              command = btn_8_entry
               )
 
 
