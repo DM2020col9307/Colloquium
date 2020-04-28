@@ -1,10 +1,8 @@
-import re  # Регулярные выражения, для парсера строки.
-
-# Парсер входной строки.
+#Регулярные выражения, для парсера строки.
+#Авторство модулей можно посмотреть в файле README
 import re
-
-
 def parse(s):
+    """Парсер входных данных"""
     def forN(s):
         return 'N(' + s[0] + ')'
 
@@ -27,8 +25,8 @@ def parse(s):
     return s
 
 
-# Cтабилизация типа -- приводит действие к более "старшему" типу в порядке N -> Z -> Q -> poly.
 def tryReverseOp(a, b, op):
+    """ Cтабилизация типа -- приводит действие к более "старшему" типу в порядке N -> Z -> Q -> poly."""
     crutch = {type(N(0)): 1,
               type(Z(0)): 2,
               type(Q(0)): 3,
@@ -42,14 +40,15 @@ def tryReverseOp(a, b, op):
     except:
         print(a, op, b, ": ", type(a), type(b))
         raise RuntimeError(
-            "Impossible compare type")  # Если ошибка при сравнении всё-таки произошла, то сообщаем об этом, вызывая исключение.
+            "Impossible to compare those types")  # Если ошибка при сравнении всё-таки произошла, то сообщаем об этом, вызывая исключение.
 
 
-def gcd(*args):  # Общая vararg-функция вызова всех GCD() аргументов по цепи.
+def gcd(*args):
+    """Общая vararg-функция вызова всех GCD() аргументов по цепи"""
     args, arglist, mustBePoly, outgcd = list(args), [], False, None
 
     if len(args) < 2:  # Если слишком мало аргументов -- возбуждаем ошибку.
-        raise RuntimeError("There's too few arguments for GCD().")
+        raise RuntimeError("There's too few arguments for GCD()")
 
     for i in args:  # Формируем список из аргументов, попутно проверяя, нет ли ошибок в исходных данных и должен ли результат быть полиномом.
         if isinstance(i, (poly)):
@@ -61,7 +60,7 @@ def gcd(*args):  # Общая vararg-функция вызова всех GCD() 
             arglist.append(i)
         else:
             print(i)
-            raise RuntimeError("Object is not a N-digit, Z-digit or polynom.")
+            raise RuntimeError("Object is not a N-digit, Z-digit or polynom")
 
     if mustBePoly:  # Здесь приводим все не-poly() объекты к poly() и говорим, что результат -- тоже полином.
         if not isinstance(arglist[0], (poly)):
@@ -80,11 +79,12 @@ def gcd(*args):  # Общая vararg-функция вызова всех GCD() 
     return outgcd
 
 
-def lcm(*args):  # Общая vararg-функция вызова всех LCM() аргументов по цепи.
+def lcm(*args):
+    """Общая vararg-функция вызова всех LCM() аргументов по цепи."""
     args, arglist, outlcm = list(args), [], None
 
     if len(args) < 2:  # Если слишком мало аргументов -- возбуждаем ошибку.
-        raise RuntimeError("There's too few arguments for LCM().")
+        raise RuntimeError("There's too few arguments for LCM()")
     for i in args:  # Формируем список из N() из аргументов, попутно проверяя, нет ли ошибок в исходных данных.
         if isinstance(i, (Z)):
             arglist.append(abs(i).toN())
@@ -92,16 +92,15 @@ def lcm(*args):  # Общая vararg-функция вызова всех LCM() 
             arglist.append(i)
         else:
             print(i)
-            raise RuntimeError("Object is not a N-digit or Z-digit.")
+            raise RuntimeError("Object is not a N-digit or Z-digit")
 
     outlcm = arglist[0]
     for i in range(1, len(arglist)):
         outlcm = outlcm.lcm(arglist[i])  # Цепной вызов GCD() текущего объекта с предыдущим (начиная со второго).
     return outlcm
 
-
+#Ниже представлены функции, которые вызывают необходимые методы для разнообразия ввода исходных данных
 def derivative(arg): return der(arg)
-
 
 def der(arg):
     if (isinstance(arg, (N, Z, Q))):
@@ -110,11 +109,10 @@ def der(arg):
         return arg.der()
     else:
         print(arg)
-        raise RuntimeError("Cannot convert to digit or polynom.")
+        raise RuntimeError("Can't convert to digit or polynom")
 
 
 def degree(arg): return deg(arg)
-
 
 def deg(arg):
     if (isinstance(arg, (N, Z, Q))):
@@ -123,7 +121,7 @@ def deg(arg):
         return arg.deg()
     else:
         print(arg)
-        raise RuntimeError("Cannot convert to digit or polynom.")
+        raise RuntimeError("Can't convert to digit or polynom")
 
 
 def lead(arg): return leadcoef(arg)
@@ -142,7 +140,7 @@ def leadcoef(arg):
         return arg.lead()
     else:
         print(arg)
-        raise RuntimeError("Cannot convert to digit or polynom.")
+        raise RuntimeError("Can't convert to digit or polynom")
 
 
 def redq(arg): return reduceq(arg)
@@ -176,7 +174,7 @@ def reduceq(arg):
         return arg.red()
     else:
         print(arg)
-        raise RuntimeError("Cannot reduce digit.")
+        raise RuntimeError("Can't reduce fraction")
 
 
 def factorize(arg): factor(arg)
@@ -192,30 +190,31 @@ def factor(arg):
         return arg.factor_P()
     else:
         print(arg)
-        raise RuntimeError("Cannot convert to digit polynom.")
+        raise RuntimeError("Can't convert to digit or polynom")
 
 
-def nmr(arg):  # Я не знаю, что это, так что пусть пока что будет без алиасов...
+def nmr(arg):
+    """Превращает кратные корни в простые"""
     if (isinstance(arg, (N, Z, Q))):
         return N(0)
     elif (isinstance(arg, (poly))):
         return arg.nmr()
     else:
         print(arg)
-        raise RuntimeError("Cannot convert to digit or polynom.")
+        raise RuntimeError("Can't convert to digit or polynom")
 
 
 class N():
-    # Инициализация класса.
-    # Здесь: списку "N.digits" присваивается значение первого аргумента (тип: int).
-    # Пример: "N( 75044 )" создаст объект класса "N()" с "digits = [7, 5, 0, 4, 4]".
+    """ Инициализация класса.
+        Здесь: списку "N.digits" присваивается значение первого аргумента (тип: int).
+        Пример: "N( 75044 )" создаст объект класса "N()" с "digits = [7, 5, 0, 4, 4]"""
     def __init__(self, digit):
         self.digits = []
         try:
             digit = str(int(str(digit).replace('[', '').replace(']', '').replace(' ', '').replace(',', '')))
             self.digits = [int(i) for i in digit]
         except:
-            raise RuntimeError("Digit cannot be presented as integer > 0.")
+            raise RuntimeError("Digit can't be presented as integer > 0")
 
     # Что возвращается при вызове через "print()", "format()" и им подобное.
     def __str__(self):
@@ -375,7 +374,7 @@ class N():
     def mulk(self, k):
         return N(self.digits + [0] * k)  # Изящное умножение в реалиях коллоквиума...
 
-    # "*"
+    # "Перегрузка умножения"
     def __mul__(self, other):
         if type(self) != type(other):  # Отправляем в обменную централь, если типы разнятся.
             return tryReverseOp(self, other, '*')
@@ -405,7 +404,7 @@ class N():
             res -= 1
         return res * 10 ** k
 
-    # магия "//" здесь целая часть ( не уверен, что работает во всех случаях )
+    # Перегрузка целочисленного деления
     def __floordiv__(self, other):
         if (other==N(0)):
             raise RuntimeError("Second number can't be equal to the zero")
@@ -415,7 +414,6 @@ class N():
         lst += self.digits
         tmp = N(lst)
         n = N(0)
-
         while tmp >= other:
             n = n + N(tmp.divdk(other))
             if tmp < N(tmp.divdk(other)) * other:
@@ -423,7 +421,7 @@ class N():
             tmp = tmp - N(tmp.divdk(other)) * other
         return n
 
-    # "%"
+    # Перегрузка остатка от деления
     def __mod__(self, other):
         if (other == N(0)):
             raise RuntimeError("Second number can't be equal to the zero")
@@ -434,7 +432,7 @@ class N():
         n = self - n
         return n
 
-    # Перегрузка "/"
+    # Перегрузка деления с остатком
     def __truediv__(self, other):  # Обёртка для "//" -- по-идее, просто передача управления туда.
         if (other == N(0)):
             raise RuntimeError("Second number can't be equal to the zero")
@@ -445,7 +443,7 @@ class N():
         else:
             return Q(self, other)
 
-    # НОД, пока в виде метода
+    # Поиска НОДА чисел
     def gcd(self, other):
         # в этом варианте self не будет изменен
         lst1 = []
@@ -454,12 +452,12 @@ class N():
         lst2 += other.digits
         tmp1 = N(lst1)
         tmp2 = N(lst2)
-        while tmp2 != N(0):  # Стандартный алгоритм нахождения НОД.
+        while tmp2 != N(0):  # Стандартный алгоритм нахождения НОД. Алгоиртм Евклида.
             tmp1 = tmp1 % tmp2
             tmp1, tmp2 = tmp2, tmp1
         return tmp1
 
-    # НОК
+    # Нахожление НОКА чисео
     def lcm(self, other):  # НОК( a, b ) == ( a * b )/НОД( a, b ).
         res = self * other
         res = res / self.gcd(other)
@@ -467,9 +465,11 @@ class N():
 
 
 class Z():
-    # Инициализация класса.
-    # Здесь: списку "Z.digits" присваивается значение первого аргумента (тип: int).
-    # Пример: "Z( -1234 )" создаст объект класса "Z()" с "digits = [1, 2, 3, 4]" и "sign = True".
+    """
+    Инициализация класса.
+    Здесь: списку "Z.digits" присваивается значение первого аргумента (тип: int).
+    Пример: "Z( -1234 )" создаст объект класса "Z()" с "digits = [1, 2, 3, 4]" и "sign = True".
+    """
     def __init__(self, digit):
         try:
             digit = str(
@@ -483,7 +483,7 @@ class Z():
                 self.sign = False
         except:
             print(digit)
-            raise RuntimeError("Digit cannot be presented as integer.")
+            raise RuntimeError("Digit can't be presented as integer")
 
     # Что возвращается при вызове через "print()", "format()" и им подобное.
     def __str__(self):
@@ -495,12 +495,13 @@ class Z():
     def __len__(self):
         return len(self.digits)
 
+    #Модуль числа. Отсекание знака
     def __abs__(self):
         return Z(self.digits)
-
+    #Конвертация в N,Q,Poly соответственно
     def toN(self):
         if (self.sign):
-            raise RuntimeError("Z", str(self), "cannot be presented as N.")
+            raise RuntimeError("Z", str(self), "Digit Can't be presented as Natural.")
         return N(str(self))
 
     def toQ(self):
@@ -509,7 +510,7 @@ class Z():
     def toPoly(self):
         return poly(self)
 
-    # Перегрузка операторов.
+    # Перегрузка операторов. Аналогично тому, как это было сделано в N
 
     def __neg__(self):
         return Z(-1) * self
@@ -558,7 +559,7 @@ class Z():
     def __add__(self, other):
         if type(self) != type(other):
             return tryReverseOp(self, other, "+")
-        if self.sign and other.sign:
+        if self.sign and other.sign: #Рассматриваем различные ситуации - когда оба отрицательных, положительных и разных знаков
             return Z('-' + str(abs(self).toN() + abs(other).toN()))
         if not (self.sign or other.sign):
             return Z(self.toN() + other.toN())
@@ -570,7 +571,7 @@ class Z():
     def __mul__(self, other):
         if type(self) != type(other):
             return tryReverseOp(self, other, "*")
-        return Z(("-" if self.sign ^ other.sign else "") + str(abs(self).toN() * abs(other).toN()))
+        return Z(("-" if self.sign ^ other.sign else "") + str(abs(self).toN() * abs(other).toN())) #Проверяем знаки и добавлем при ниобходимости
 
     def __floordiv__(self, other):
         if (other == Z(0)):
@@ -614,6 +615,9 @@ class Z():
 
 
 class Q():
+    """ Инициализация класса.
+            Здесь: списку "N.num" присваивается значение первого аргумента, а спику "N.denum" - второго аргумента
+            Пример: "N(5,3)" создаст объект класса "N()" с "num=[5], denum=[3]"""
     def __init__(self, num, denum=N(1)):
         if isinstance(num, N):
             self.num = num.toZ()
@@ -634,15 +638,15 @@ class Q():
         # self.num = num # Числитель.
         # self.denum = denum  # Знаменатель.
         if self.denum == N(0):
-            raise ZeroDivisionError("Divided by zero")
+            raise RuntimeError("Second number can't be equal to the zero")
 
     def __str__(self):
         res = str(self.num) + (
                 str(self.denum) != '1' and "/{}".format(self.denum) or "")  # если знаменатель == 1, не пишется
-        # res = "{}/{}".format(self.num, self.denum)
         return res
 
     def red(self):
+        """Функция сокращения дроби"""
         gcd = self.denum.gcd(abs(self.num).toN())
         num = self.num / gcd
         denum = self.denum / gcd
@@ -658,13 +662,13 @@ class Q():
         if (self.ifZ and (self.num // self.denum >= Z(0))):
             return N(str(self.num // self.denum))
         else:
-            raise RuntimeError("Z", str(self), "cannot be presented as N.")
+            raise RuntimeError("Z", str(self), "Digit can't be presented as Natural")
 
     def toZ(self):
         if (self.ifZ):
             return Z(str(self.num // self.denum))
         else:
-            raise RuntimeError("Z", str(self), "cannot be presented as N.")
+            raise RuntimeError("Z", str(self), "Digit can't be presented as Natural")
 
     def toPoly(self):
         return poly(self)
@@ -708,7 +712,6 @@ class Q():
         denum = self.denum * other.num
         return Q(num, denum).red()
 
-    # хз, как это будет работать
     def __floordiv__(self, other):
         if (other == Q(0)):
             raise RuntimeError("Second number can't be equal to the zero")
@@ -718,7 +721,6 @@ class Q():
         res = tmp.num // tmp.denum
         return res
 
-    # не уверен, что деление с остатком имеет отношение к дробям, но пусть будет
     def __mod__(self, other):
         if (other == Q(0)):
             raise RuntimeError("Second number can't be equal to the zero")
@@ -754,9 +756,11 @@ class Q():
 
 
 class poly():
-    # Здесь: poly() имеет в себе одну переменную-словарь "coef", в которой хранятся
-    # значения по шаблону { <степень>: <Q-объект>, ... }.
-    # Пример: poly( {23: Q( 3, 4 ), 7: Q( -4 )} ) будет выглядеть как "3/4 * x^23 - 4 * x^7".
+    """
+    Здесь: poly() имеет в себе одну переменную-словарь "coef", в которой хранятся
+    значения по шаблону { <степень>: <Q-объект>, ... }.
+    Пример: poly( {23: Q( 3, 4 ), 7: Q( -4 )} ) будет выглядеть как "3/4 * x^23 - 4 * x^7".
+    """
     def __init__(self, coeflist):
         self.coef = {}
 
@@ -783,7 +787,7 @@ class poly():
                 self.coef.update({i: Q(lst[-i - 1])})
         coeflist = self.coef.copy()
         for i in self.coef.keys():
-            if str(self.coef[i]) == "0":  # A-a-argh, beautiful crutch!..
+            if str(self.coef[i]) == "0":
                 coeflist.pop(i)
         self.coef = coeflist.copy()
 
@@ -827,7 +831,6 @@ class poly():
         return self.coef[self.deg()]
 
     # Перегрузка операторов.
-
     def __neg__(self):
         return Z(-1) * self
 
@@ -952,17 +955,3 @@ class poly():
         res = self / gcd
         return res
 
-
-# print( eval( 'gcd( N( 123444 ), N( 8736492 ), Z( 8289798 ) )' ) )
-# print( eval( 'derivative( poly({  1: Q( 3, 4 ), 7: Q( 17, 9 ), 9992: Z( -8 )   }) )' ) )
-'''print( poly({  -4: Q( 5, 4 )  }) + poly({  -4: Q( 7, 17 ), 17: Q( -3 )  }) )
-print(poly('1 2 2'))
-print(poly('2 2')/poly('1 1'))
-print(poly('1 2 1').gcd(poly('2 2')))
-print(poly({100:1})/poly({100:1}))
-print(poly('-1'))
-print(eval('N(5) * N(9) / N(4) + N(3)'))
-#print(poly('1 -20 175 -878 2779 -5744 7737 -6534 3132 -648').nmr())'''
-
-# s1 = '5 * 9 / 4 +3x^2'
-# print(eval(parse(s1)))
