@@ -1015,4 +1015,3 @@ class poly():
         gcd = self.gcd(der)
         res = self / gcd
         return res
-
